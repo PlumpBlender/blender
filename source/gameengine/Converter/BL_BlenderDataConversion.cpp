@@ -53,8 +53,7 @@
 
 #include "BL_BlenderDataConversion.h"
 
-#include "MT_Transform.h"
-#include "MT_MinMax.h"
+#include "mathfu.h"
 
 #include "GPU_texture.h"
 
@@ -361,7 +360,7 @@ static void GetUvRgba(const RAS_MeshObject::LayerList& layers, unsigned int loop
 		}
 		else if (layer.uv) {
 			const MLoopUV& uv = layer.uv[loop];
-			uvs[index].setValue(uv.uv);
+			uvs[index] = mt::vec2(uv.uv);
 		}
 	}
 
@@ -370,7 +369,7 @@ static void GetUvRgba(const RAS_MeshObject::LayerList& layers, unsigned int loop
 	 * when no uv or color layer exist.
 	 */
 	if (uvLayers == 0) {
-		uvs[0] = MT_Vector2(0.0f, 0.0f);
+		uvs[0] = mt::vec2(0.0f, 0.0f);
 	}
 	if (colorLayers == 0) {
 		rgba[0] = 0xFFFFFFFF;
@@ -546,10 +545,10 @@ RAS_MeshObject* BL_ConvertMesh(Mesh* mesh, Object* blenderobj, KX_Scene* scene, 
 			const unsigned int vertid = mloop.v;
 			const MVert& mvert = mverts[vertid];
 
-			const MT_Vector3 pt(mvert.co);
-			const MT_Vector3 no(normals[j]);
-			const MT_Vector4 tan = tangent ? MT_Vector4(tangent[j]) : MT_Vector4(0.0f, 0.0f, 0.0f, 0.0f);
-			MT_Vector2 uvs[RAS_Texture::MaxUnits];
+			const mt::vec3 pt(mvert.co);
+			const mt::vec3 no(normals[j]);
+			const mt::vec4 tan = tangent ? mt::vec4(tangent[j]) : mt::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+			mt::vec2 uvs[RAS_Texture::MaxUnits];
 			unsigned int rgba[RAS_Texture::MaxUnits];
 
 			GetUvRgba(layersInfo.layers, j, uvs, rgba, uvLayers, colorLayers);
@@ -626,7 +625,7 @@ static PHY_ShapeProps *CreateShapePropsFromBlenderObject(struct Object* blendero
 	shapeProps->m_lin_drag = 1.0f - blenderobject->damping;
 	shapeProps->m_ang_drag = 1.0f - blenderobject->rdamping;
 	
-	shapeProps->m_friction_scaling = MT_Vector3(blenderobject->anisotropicFriction);
+	shapeProps->m_friction_scaling = mt::vec3(blenderobject->anisotropicFriction);
 	shapeProps->m_do_anisotropic = ((blenderobject->gameflag & OB_ANISOTROPIC_FRICTION) != 0);
 	
 	shapeProps->m_do_fh     = (blenderobject->gameflag & OB_DO_FH) != 0; 
@@ -1008,7 +1007,7 @@ static KX_GameObject *gameobject_from_blenderobject(
 	{
 		gameobj->SetLayer(ob->lay);
 		gameobj->SetBlenderObject(ob);
-		gameobj->SetObjectColor(MT_Vector4(ob->col));
+		gameobj->SetObjectColor(mt::vec4(ob->col));
 		/* set the visibility state based on the objects render option in the outliner */
 		if (ob->restrictflag & OB_RESTRICT_RENDER) gameobj->SetVisible(0, 0);
 	}
@@ -1171,18 +1170,17 @@ static void bl_ConvertBlenderObject_Single(
         bool isInActiveLayer
         )
 {
-	MT_Vector3 pos(
+	mt::vec3 pos(
 		blenderobject->loc[0]+blenderobject->dloc[0],
 		blenderobject->loc[1]+blenderobject->dloc[1],
 		blenderobject->loc[2]+blenderobject->dloc[2]
 	);
 
-	MT_Matrix3x3 rotation;
 	float rotmat[3][3];
 	BKE_object_rot_to_mat3(blenderobject, rotmat, false);
-	rotation.setValue3x3((float*)rotmat);
+	mt::mat3 rotation(rotmat);
 
-	MT_Vector3 scale(blenderobject->size);
+	mt::vec3 scale(blenderobject->size);
 
 	gameobj->NodeSetLocalPosition(pos);
 	gameobj->NodeSetLocalOrientation(rotation);
@@ -1212,29 +1210,29 @@ static void bl_ConvertBlenderObject_Single(
 		vec_parent_child.push_back(pclink);
 
 		float* fl = (float*) blenderobject->parentinv;
-		MT_Transform parinvtrans(fl);
-		parentinversenode->SetLocalPosition(parinvtrans.getOrigin());
+		mt::mat3x4 parinvtrans(fl);
+		parentinversenode->SetLocalPosition(parinvtrans.TranslationVector3D());
 		// problem here: the parent inverse transform combines scaling and rotation
 		// in the basis but the scenegraph needs separate rotation and scaling.
 		// This is not important for OpenGL (it uses 4x4 matrix) but it is important
 		// for the physic engine that needs a separate scaling
-		//parentinversenode->SetLocalOrientation(parinvtrans.getBasis());
+		//parentinversenode->SetLocalOrientation(parinvtrans.RotationMatrix());
 
 		// Extract the rotation and the scaling from the basis
-		MT_Matrix3x3 ori(parinvtrans.getBasis());
-		MT_Vector3 x(ori.getColumn(0));
-		MT_Vector3 y(ori.getColumn(1));
-		MT_Vector3 z(ori.getColumn(2));
-		MT_Vector3 parscale(x.length(), y.length(), z.length());
-		if (!MT_fuzzyZero(parscale[0]))
+		mt::mat3 ori(parinvtrans.RotationMatrix());
+		mt::vec3 x(ori.GetColumn(0));
+		mt::vec3 y(ori.GetColumn(1));
+		mt::vec3 z(ori.GetColumn(2));
+		mt::vec3 parscale(x.Length(), y.Length(), z.Length());
+		if (!mt::FuzzyZero(parscale[0]))
 			x /= parscale[0];
-		if (!MT_fuzzyZero(parscale[1]))
+		if (!mt::FuzzyZero(parscale[1]))
 			y /= parscale[1];
-		if (!MT_fuzzyZero(parscale[2]))
+		if (!mt::FuzzyZero(parscale[2]))
 			z /= parscale[2];
-		ori.setColumn(0, x);
-		ori.setColumn(1, y);
-		ori.setColumn(2, z);
+		ori.GetColumn(0) = x;
+		ori.GetColumn(1) = y;
+		ori.GetColumn(2) = z;
 		parentinversenode->SetLocalOrientation(ori);
 		parentinversenode->SetLocalScale(parscale);
 
@@ -1346,7 +1344,7 @@ void BL_ConvertBlenderObjects(struct Main* maggie,
 	);
 	kxscene->SetFramingType(frame_settings);
 
-	kxscene->SetGravity(MT_Vector3(0,0, -blenderscene->gm.gravity));
+	kxscene->SetGravity(mt::vec3(0,0, -blenderscene->gm.gravity));
 	
 	/* set activity culling parameters */
 	kxscene->SetActivityCulling( (blenderscene->gm.mode & WO_ACTIVITY_CULLING) != 0);
@@ -1731,8 +1729,8 @@ void BL_ConvertBlenderObjects(struct Main* maggie,
 			gameobj->SetAutoUpdateBounds(false);
 
 			// AABB Box : min/max.
-			MT_Vector3 aabbMin;
-			MT_Vector3 aabbMax;
+			mt::vec3 aabbMin;
+			mt::vec3 aabbMax;
 			// Get the mesh bounding box for none deformer.
 			RAS_BoundingBox *boundingBox = meshobj->GetBoundingBox();
 			// Get the AABB.
