@@ -234,7 +234,7 @@ public:
 			PHY_IMotionState *motionState = (PHY_IMotionState *)info.m_clientInfo;
 			m_vehicle->updateWheelTransform(i, false);
 			const btTransform trans = m_vehicle->getWheelInfo(i).m_worldTransform;
-			motionState->SetWorldOrientation(ToMoto(trans.getRotation()));
+			motionState->SetWorldOrientation(ToMoto(trans.getBasis()));
 			motionState->SetWorldPosition(ToMoto(trans.getOrigin()));
 		}
 	}

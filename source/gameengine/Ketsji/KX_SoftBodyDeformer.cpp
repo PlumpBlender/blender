@@ -104,9 +104,9 @@ bool KX_SoftBodyDeformer::Apply(RAS_MeshMaterial *meshmat, RAS_IDisplayArray *ar
 	// AABB Box : min/max.
 	mt::vec3 aabbMin;
 	mt::vec3 aabbMax;
+	const bool autoUpdate = m_gameobj->GetAutoUpdateBounds();
 
-	const mt::vec3& pos = m_gameobj->NodeGetWorldPosition();
-	const mt::mat3 mat = m_gameobj->NodeGetWorldOrientation().Inverse();
+	const mt::mat3x4 trans = m_gameobj->NodeGetWorldTransform().Inverse();
 
 	for (unsigned int i = 0, size = array->GetVertexCount(); i < size; ++i) {
 		RAS_IVertex *v = array->GetVertex(i);
@@ -130,12 +130,12 @@ bool KX_SoftBodyDeformer::Apply(RAS_MeshMaterial *meshmat, RAS_IDisplayArray *ar
 		    nodes[softbodyindex].m_n.getZ());
 		v->SetNormal(normal);
 
-		if (!m_gameobj->GetAutoUpdateBounds()) {
+		if (!autoUpdate) {
 			continue;
 		}
 
 		// Extract object transform from the vertex position.
-		pt = (pt - pos) * mat;
+		pt = trans * pt;
 		// if the AABB need an update.
 		if (i == 0) {
 			aabbMin = aabbMax = pt;
@@ -151,7 +151,9 @@ bool KX_SoftBodyDeformer::Apply(RAS_MeshMaterial *meshmat, RAS_IDisplayArray *ar
 					  RAS_IDisplayArray::UVS_MODIFIED |
 					  RAS_IDisplayArray::COLORS_MODIFIED));
 
-	m_boundingBox->ExtendAabb(aabbMin, aabbMax);
+	if (autoUpdate) {
+		m_boundingBox->ExtendAabb(aabbMin, aabbMax);
+	}
 
 	array->SetModifiedFlag(RAS_IDisplayArray::POSITION_MODIFIED | RAS_IDisplayArray::NORMAL_MODIFIED);
 

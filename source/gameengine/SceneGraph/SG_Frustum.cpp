@@ -118,11 +118,9 @@ SG_Frustum::TestType SG_Frustum::AabbInsideFrustum(const mt::vec3& min, const mt
 {
 	TestType result = INSIDE;
 
-	const mt::mat4 transp = mat.Transpose();
-
 	for (const mt::vec4& wplane : m_planes) {
 		// Compute frustum plane in object space.
-		const mt::vec4 oplane = transp * wplane;
+		const mt::vec4 oplane = wplane * mat;
 
 		// Test near and far AABB vertices.
 		mt::vec3 near;

@@ -215,6 +215,28 @@ class Matrix<float, 4> {
     return return_m;
   }
 
+  friend inline Vector<float, 4> operator*(const Vector<float, 4>& v, const Matrix<float, 4>& m) {
+    return Vector<float, 4>(
+      simd4f_get_x(simd4f_dot4(v.simd, m.simd.x)),
+      simd4f_get_x(simd4f_dot4(v.simd, m.simd.y)),
+      simd4f_get_x(simd4f_dot4(v.simd, m.simd.z)),
+      simd4f_get_x(simd4f_dot4(v.simd, m.simd.w)));
+  }
+
+  friend inline Vector<float, 3> operator*(const Vector<float, 3>& v, const Matrix<float, 4>& m) {
+    Vector<float, 3> return_v;
+    simd4f temp_simd = simd4f_create(v[0], v[1], v[2], 1.0f);
+
+    return_v.data_[0] = simd4f_get_x(simd4f_dot4(temp_simd, m.simd.x));
+    return_v.data_[1] = simd4f_get_x(simd4f_dot4(temp_simd, m.simd.y));
+    return_v.data_[2] = simd4f_get_x(simd4f_dot4(temp_simd, m.simd.z));
+    return_v.data_[3] = simd4f_get_x(simd4f_dot4(temp_simd, m.simd.w));
+
+    return_v *= (1.0f / return_v.data_[3]);
+
+    return return_v;
+  }
+
   inline Matrix<float, 4> Inverse() const {
     Matrix<float, 4> return_m;
     simd4x4f_inverse(&simd, &return_m.simd);
