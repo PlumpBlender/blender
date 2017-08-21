@@ -1847,23 +1847,6 @@ static inline CompatibleT ToTypeHelper(const Matrix<T, rows, columns>& m) {
 }
 /// @endcond
 
-/// @cond MATHFU_INTERNAL
-template<typename T, int rows, int columns>
-std::ostream& operator <<(std::ostream& stream, const Matrix<T, rows, columns>& m) {
-  int s = columns - 1;
-
-  stream << "\n";
-  for (int i = 0; i < rows; ++i) {
-    for (int j = 0; j < s; ++j) {
-      stream << m.GetColumn(j)[i] << ", ";
-    }
-    stream << m.GetColumn(s)[i] << "\n";
-  }
-
-  return stream;
-}
-/// @endcond
-
 /// @typedef AffineTransform
 ///
 /// @brief A typedef representing a 4x3 float affine transformation.

@@ -37,6 +37,7 @@ set(SRC
 	mathfu/frustum.h
 	mathfu/glsl_mapping.h
 	mathfu/hlsl_mapping.h
+	mathfu/io.h
 	mathfu/matrix.h
 	mathfu/matrix_4x4.h
 	mathfu/quaternion.h
@@ -66,11 +67,5 @@ set(SRC
 	vectorial/vec_convert.h
 	vectorial/vectorial.h
 )
-
-# 	if(WITH_OPENVDB_BLOSC)
-# 		add_definitions(
-# 			-DWITH_OPENVDB_BLOSC
-# 		)
-# 	endif()
 
 blender_add_lib(bf_intern_mathfu "${SRC}" "${INC}" "${INC_SYS}")
