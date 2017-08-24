@@ -305,9 +305,6 @@ bool KX_MouseFocusSensor::ParentObjectHasFocusCamera(KX_Camera *cam)
 	float x_lb = float(viewport.GetLeft());
 	float y_lb = float(viewport.GetBottom());
 
-	mt::vec4 frompoint;
-	mt::vec4 topoint;
-	
 	/* m_y_inv - inverting for a bounds check is only part of it, now make relative to view bounds */
 	m_y_inv = (viewport.GetTop() - m_y_inv) + viewport.GetBottom();
 	
@@ -322,15 +319,8 @@ bool KX_MouseFocusSensor::ParentObjectHasFocusCamera(KX_Camera *cam)
 	 *	The actual z coordinates used don't have to be exact just infront and 
 	 *	behind of the near and far clip planes.
 	 */ 
-	frompoint = mt::vec4(	(2 * (m_x-x_lb) / width) - 1.0f,
-						1.0f - (2 * (m_y_inv - y_lb) / height),
-						-1.0f,
-						1.0f );
-	
-	topoint = mt::vec4(	(2 * (m_x-x_lb) / width) - 1.0f,
-						1.0f - (2 * (m_y_inv-y_lb) / height),
-						1.0f,
-						1.0f );
+	mt::vec3 frompoint((2 * (m_x-x_lb) / width) - 1.0f, 1.0f - (2 * (m_y_inv - y_lb) / height), -1.0f);
+	mt::vec3 topoint((2 * (m_x-x_lb) / width) - 1.0f, 1.0f - (2 * (m_y_inv-y_lb) / height), 1.0f);
 	
 	/* camera to world  */
 	mt::mat4 camcs_wcs_matrix = mt::mat4::FromAffineTransform(cam->GetCameraToWorld());
@@ -348,9 +338,8 @@ bool KX_MouseFocusSensor::ParentObjectHasFocusCamera(KX_Camera *cam)
 	topoint   = camcs_wcs_matrix * topoint;
 	
 	/* from hom wcs to 3d wcs: */
-	m_prevSourcePoint = frompoint.xyz() / frompoint.w;
-	
-	m_prevTargetPoint = topoint.xyz() / topoint.w;
+	m_prevSourcePoint = frompoint;
+	m_prevTargetPoint = topoint;
 	
 	/* 2. Get the object from PhysicsEnvironment */
 	/* Shoot! Beware that the first argument here is an
