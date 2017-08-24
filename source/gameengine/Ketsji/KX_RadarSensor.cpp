@@ -91,62 +91,52 @@ CValue* KX_RadarSensor::GetReplica()
 void KX_RadarSensor::SynchronizeTransform()
 {
 	KX_GameObject *obj = static_cast<KX_GameObject *>(GetParent());
-	mt::mat3x4 trans(obj->NodeGetWorldOrientation(), obj->NodeGetWorldPosition());
+	mt::mat3 rot = obj->NodeGetWorldOrientation();
+	const mt::vec3& pos = obj->NodeGetWorldPosition();
 	// What is the default orientation? pointing in the -y direction?
 	// is the geometry correctly converted?
 
 	// a collision cone is oriented
 	// center the cone correctly 
 	// depends on the radar 'axis'
-	/*switch (m_axis)
+	switch (m_axis)
 	{
 	case SENS_RADAR_X_AXIS: // +X Axis
 		{
-			mt::quat rotquatje(M_PI / 2.0f, mt::axisZ3);
-			trans.rotate(rotquatje);
-			trans.translate(mt::vec3 (0, -m_coneheight/2.0f, 0));
+			rot *= mt::mat3(0.0f, 0.0f, M_PI / 2.0f);
 			break;
 		};
 	case SENS_RADAR_Y_AXIS: // +Y Axis
 		{
-			mt::quat rotquatje(-M_PI, mt::axisX3);
-			trans.rotate(rotquatje);
-			trans.translate(mt::vec3 (0, -m_coneheight/2.0f, 0));
+			rot *= mt::mat3(-M_PI, 0.0f, 0.0f);
 			break;
 		};
 	case SENS_RADAR_Z_AXIS: // +Z Axis
 		{
-			mt::quat rotquatje(-M_PI / 2.0f, mt::axisX3);
-			trans.rotate(rotquatje);
-			trans.translate(mt::vec3 (0, -m_coneheight/2.0f, 0));
+			rot *= mt::mat3(-M_PI / 2.0f, 0.0f, 0.0f);
 			break;
 		};
 	case SENS_RADAR_NEG_X_AXIS: // -X Axis
 		{
-			mt::quat rotquatje(-M_PI / 2.0f, mt::axisZ3);
-			trans.rotate(rotquatje);
-			trans.translate(mt::vec3 (0, -m_coneheight/2.0f, 0));
+			rot *= mt::mat3(0.0f, 0.0f, -M_PI / 2.0f);
 			break;
 		};
 	case SENS_RADAR_NEG_Y_AXIS: // -Y Axis
 		{
-			//mt::quat rotquatje(mt::vec3(1,0,0),MT_radians(-180));
-			//trans.rotate(rotquatje);
-			trans.translate(mt::vec3 (0, -m_coneheight/2.0f, 0));
 			break;
 		};
 	case SENS_RADAR_NEG_Z_AXIS: // -Z Axis
 		{
-			mt::quat rotquatje(M_PI / 2.0f, mt::axisX3);
-			trans.rotate(rotquatje);
-			trans.translate(mt::vec3 (0, -m_coneheight/2.0f, 0));
+			rot *= mt::mat3(M_PI / 2.0f, 0.0f, 0.0f);
 			break;
 		};
 	default:
 		{
 		}
-	} TODO */
-	
+	}
+
+	mt::mat3x4 trans(rot, pos + rot * mt::vec3(0, -m_coneheight/2.0f, 0));
+
 	//Using a temp variable to translate mt::vec3 to float[3].
 	//float[3] works better for the Python interface.
 	mt::vec3 temp = trans.TranslationVector3D();

@@ -222,51 +222,37 @@ bool KX_RaySensor::Evaluate()
 	{
 	case SENS_RAY_X_AXIS: // X
 		{
-			todir[0] = mat(0, 0);
-			todir[1] = mat(1, 0);
-			todir[2] = mat(2, 0);
+			todir = mat.GetColumn(0);
 			break;
 		}
 	case SENS_RAY_Y_AXIS: // Y
 		{
-			todir[0] = mat(0, 1);
-			todir[1] = mat(1, 1);
-			todir[2] = mat(2, 1);
+			todir = mat.GetColumn(1);
 			break;
 		}
 	case SENS_RAY_Z_AXIS: // Z
 		{
-			todir[0] = mat(0, 2);
-			todir[1] = mat(1, 2);
-			todir[2] = mat(2, 2);
+			todir = mat.GetColumn(2);
 			break;
 		}
 	case SENS_RAY_NEG_X_AXIS: // -X
 		{
-			todir[0] = -mat(0, 0);
-			todir[1] = -mat(1, 0);
-			todir[2] = -mat(2, 0);
+			todir = -mat.GetColumn(0);
 			break;
 		}
 	case SENS_RAY_NEG_Y_AXIS: // -Y
 		{
-			todir[0] = -mat(0, 1);
-			todir[1] = -mat(1, 1);
-			todir[2] = -mat(2, 1);
+			todir = -mat.GetColumn(1);
 			break;
 		}
 	case SENS_RAY_NEG_Z_AXIS: // -Z
 		{
-			todir[0] = -mat(0, 2);
-			todir[1] = -mat(1, 2);
-			todir[2] = -mat(2, 2);
+			todir = -mat.GetColumn(2);
 			break;
 		}
 	}
 	todir.Normalize();
-	m_rayDirection[0] = todir[0];
-	m_rayDirection[1] = todir[1];
-	m_rayDirection[2] = todir[2];
+	todir.Pack(m_rayDirection);
 
 	mt::vec3 topoint = frompoint + (m_distance) * todir;
 	PHY_IPhysicsEnvironment* pe = m_scene->GetPhysicsEnvironment();
