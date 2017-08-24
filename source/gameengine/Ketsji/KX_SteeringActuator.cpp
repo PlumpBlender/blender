@@ -77,7 +77,7 @@ KX_SteeringActuator::KX_SteeringActuator(SCA_IObject *gameobj,
       m_pathUpdatePeriod(pathUpdatePeriod),
       m_lockzvel(lockzvel),
       m_wayPointIdx(-1),
-      m_steerVec(mt::vec3(0, 0, 0))
+      m_steerVec(mt::zero3)
 {
 	m_navmesh = static_cast<KX_NavMeshObject*>(navmesh);
 	if (m_navmesh)
@@ -192,7 +192,7 @@ bool KX_SteeringActuator::Update(double curtime)
 	mt::vec3 vectotarg = targpos - mypos;
 	mt::vec3 vectotarg2d = vectotarg;
 	vectotarg2d.z = 0.0f;
-	m_steerVec = mt::vec3(0.0f, 0.0f, 0.0f);
+	m_steerVec = mt::zero3;
 	bool apply_steerforce = false;
 	bool terminate = true;
 
@@ -319,11 +319,10 @@ bool KX_SteeringActuator::Update(double curtime)
 
 const mt::vec3& KX_SteeringActuator::GetSteeringVec()
 {
-	static mt::vec3 ZERO_VECTOR(0, 0, 0);
 	if (m_isActive)
 		return m_steerVec;
 	else
-		return ZERO_VECTOR;
+		return mt::zero3;
 }
 
 inline float vdot2(const float* a, const float* b)

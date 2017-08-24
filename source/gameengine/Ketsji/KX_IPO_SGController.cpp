@@ -59,7 +59,7 @@ KX_IpoSGController::KX_IpoSGController()
   m_modified(true),
   m_ipotime(1.0),
   m_ipo_start_initialized(false),
-  m_ipo_start_euler(0.0f, 0.0f, 0.0f),
+  m_ipo_start_euler(mt::zero3),
   m_ipo_euler_initialized(false)
 {
 	m_game_object = nullptr;
@@ -143,7 +143,7 @@ bool KX_IpoSGController::Update(double currentTime)
 			else {
 				// Local ipo should be defined with the object position at (0,0,0)
 				// Local transform is applied to the object based on initial position
-				mt::vec3 newPosition(0.0f, 0.0f, 0.0f);
+				mt::vec3 newPosition = mt::zero3;
 
 				if (!m_ipo_add)
 					newPosition = ob->GetLocalPosition();
@@ -284,7 +284,7 @@ bool KX_IpoSGController::Update(double currentTime)
 		    m_ipo_channels_active[OB_DSIZE_X] || m_ipo_channels_active[OB_DSIZE_Y] || m_ipo_channels_active[OB_DSIZE_Z])
 		{
 			//default is no scale change
-			mt::vec3 newScale(1.0f, 1.0f, 1.0f);
+			mt::vec3 newScale = mt::one3;
 			if (!m_ipo_add)
 				newScale = ob->GetLocalScale();
 

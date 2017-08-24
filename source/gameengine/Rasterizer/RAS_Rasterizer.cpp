@@ -196,10 +196,10 @@ RAS_Rasterizer::OffScreenType RAS_Rasterizer::NextRenderOffScreen(RAS_Rasterizer
 
 RAS_Rasterizer::RAS_Rasterizer()
 	:m_time(0.0f),
-	m_ambient(0.0f, 0.0f, 0.0f),
+	m_ambient(mt::zero3),
 	m_viewmatrix(mt::mat4::Identity()),
 	m_viewinvmatrix(mt::mat4::Identity()),
-	m_campos(0.0f, 0.0f, 0.0f),
+	m_campos(mt::zero3),
 	m_camortho(false),
 	m_camnegscale(false),
 	m_stereomode(RAS_STEREO_NOSTEREO),
@@ -846,8 +846,8 @@ mt::mat4 RAS_Rasterizer::GetViewMatrix(StereoMode stereoMode, StereoEye eye, con
 {
 	// correction for stereo
 	if ((stereoMode != RAS_STEREO_NOSTEREO) && perspective) {
-		static const mt::vec3 unitViewDir(0.0f, -1.0f, 0.0f);  // minus y direction, Blender convention
-		static const mt::vec3 unitViewupVec(0.0f, 0.0f, 1.0f);
+		static const mt::vec3 unitViewDir = -mt::axisY3;  // minus y direction, Blender convention
+		static const mt::vec3 unitViewupVec = mt::axisZ3;
 
 		const mt::mat3& camOrientMat3x3 = camtrans.RotationMatrix().Transpose();
 		// actual viewDir
@@ -1423,7 +1423,7 @@ void RAS_Rasterizer::GetTransform(float *origmat, int objectdrawmode, float mat[
 		// shadow must be cast to the ground, physics system needed here!
 		const mt::vec3 frompoint(&origmat[12]);
 		KX_GameObject *gameobj = KX_GameObject::GetClientObject((KX_ClientObjectInfo *)m_clientobject);
-		mt::vec3 direction = mt::vec3(0.0f, 0.0f, -1.0f);
+		mt::vec3 direction = -mt::axisZ3;
 
 		direction.Normalize();
 		direction *= 100000.0f;

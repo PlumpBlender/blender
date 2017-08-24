@@ -1380,13 +1380,13 @@ void KX_Scene::DrawDebug(RAS_DebugDraw& debugDraw, const KX_CullingNodeList& nod
 
 			// Render center in red, green and blue.
 			debugDraw.DrawLine(orientation * center * scale + position,
-				orientation * (center + mt::vec3(1.0f, 0.0f, 0.0f)) * scale + position,
+				orientation * (center + mt::axisX3) * scale + position,
 				mt::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 			debugDraw.DrawLine(orientation * center * scale + position,
-				orientation * (center + mt::vec3(0.0f, 1.0f, 0.0f)) * scale  + position,
+				orientation * (center + mt::axisY3) * scale  + position,
 				mt::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 			debugDraw.DrawLine(orientation * center * scale + position,
-				orientation * (center + mt::vec3(0.0f, 0.0f, 1.0f)) * scale  + position,
+				orientation * (center + mt::axisZ3) * scale  + position,
 				mt::vec4(0.0f, 0.0f, 1.0f, 1.0f));
 		}
 	}

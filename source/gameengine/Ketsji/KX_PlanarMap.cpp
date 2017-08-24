@@ -34,7 +34,7 @@
 
 KX_PlanarMap::KX_PlanarMap(EnvMap *env, KX_GameObject *viewpoint)
 	:KX_TextureRenderer(env, viewpoint),
-	m_normal(0.0f, 0.0f, 1.0f)
+	m_normal(mt::axisZ3)
 {
 	m_faces.emplace_back(RAS_Texture::GetTexture2DType());
 

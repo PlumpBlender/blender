@@ -71,13 +71,6 @@ protected:
 	// hit object
 	KX_GameObject* m_hitObject;
 
-	/**
-	 * Clamp <var> to <min>, <max>. Borders are included (in as far as
-	 * float comparisons are good for equality...).
-	 */
-	void Clamp(float &var, float min, float max);
-
-	
  public:
 	 //  m_locrot
 	enum KX_CONSTRAINTTYPE {

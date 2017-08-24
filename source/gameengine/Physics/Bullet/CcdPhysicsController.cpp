@@ -606,12 +606,11 @@ void CcdPhysicsController::CreateRigidbody()
 
 mt::vec3 CcdPhysicsController::GetGravity()
 {
-	mt::vec3 gravity(0.0f, 0.0f, 0.0f);
 	btRigidBody *body = GetRigidBody();
 	if (body) {
 		return ToMoto(body->getGravity());
 	}
-	return gravity;
+	return mt::zero3;
 }
 
 void CcdPhysicsController::SetGravity(const mt::vec3 &gravity)
@@ -1360,7 +1359,7 @@ mt::vec3 CcdPhysicsController::GetLinearVelocity()
 		return ToMoto(linvel);
 	}
 
-	return mt::vec3(0.0f, 0.0f, 0.0f);
+	return mt::zero3;
 }
 
 mt::vec3 CcdPhysicsController::GetAngularVelocity()
@@ -1371,7 +1370,7 @@ mt::vec3 CcdPhysicsController::GetAngularVelocity()
 		return ToMoto(angvel);
 	}
 
-	return mt::vec3(0.0f, 0.0f, 0.0f);
+	return mt::zero3;
 }
 
 mt::vec3 CcdPhysicsController::GetVelocity(const mt::vec3 &posin)
@@ -1382,12 +1381,12 @@ mt::vec3 CcdPhysicsController::GetVelocity(const mt::vec3 &posin)
 		return ToMoto(linvel);
 	}
 
-	return mt::vec3(0.0f, 0.0f, 0.0f);
+	return mt::zero3;
 }
 
 mt::vec3 CcdPhysicsController::GetLocalInertia()
 {
-	mt::vec3 inertia(0.0f, 0.0f, 0.0f);
+	mt::vec3 inertia = mt::zero3;
 	btVector3 inv_inertia;
 	if (GetRigidBody()) {
 		inv_inertia = GetRigidBody()->getInvInertiaDiagLocal();

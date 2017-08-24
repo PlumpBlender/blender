@@ -134,13 +134,13 @@ bool KX_ObjectActuator::Update()
 
 		// Explicitly stop the movement if we're using character motion
 		if (m_bitLocalFlag.CharacterMotion) {
-			character->SetWalkDirection(mt::vec3 (0.0f, 0.0f, 0.0f));
+			character->SetWalkDirection(mt::zero3);
 		}
 
 		m_linear_damping_active = false;
 		m_angular_damping_active = false;
-		m_error_accumulator = mt::vec3(0.0f,0.0f,0.0f);
-		m_previous_error = mt::vec3(0.0f,0.0f,0.0f);
+		m_error_accumulator = mt::zero3;
+		m_previous_error = mt::zero3;
 		m_jumping = false;
 		return false; 
 

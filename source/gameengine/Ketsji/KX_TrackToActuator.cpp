@@ -195,20 +195,18 @@ static float basis_cross(int n, int m)
 static mt::mat3 vectomat(const mt::vec3 &dir, short axis, short upflag, short threedimup)
 {
 	mt::mat3 mat;
-	mt::vec3 y(0.0f, 1.0f, 0.0f);
-	mt::vec3 z(0.0f, 0.0f, 1.0f); /* world Z axis is the global up axis */
 	mt::vec3 proj;
 	mt::vec3 right;
 	float mul;
 	int right_index;
 
 	/* Normalized Vec vector*/
-	mt::vec3 vec = dir.SafeNormalized(z);
+	mt::vec3 vec = dir.SafeNormalized(mt::axisZ3);
 
 	/* if 2D doesn't move the up vector */
 	if (!threedimup) {
 		vec.z = 0.0f;
-		vec = (vec - mt::dot(z, vec)*z).SafeNormalized(z);
+		vec = (vec - mt::dot(mt::axisZ3, vec) * mt::axisZ3).SafeNormalized(mt::axisZ3);
 	}
 
 	if (axis > 2)
@@ -218,12 +216,12 @@ static mt::mat3 vectomat(const mt::vec3 &dir, short axis, short upflag, short th
 
 	/* project the up vector onto the plane specified by vec */
 	/* first z onto vec... */
-	mul = mt::dot(z, vec) / mt::dot(vec, vec);
+	mul = mt::dot(mt::axisZ3, vec) / mt::dot(vec, vec);
 	proj = vec * mul;
 	/* then onto the plane */
-	proj = z - proj;
+	proj = mt::axisZ3 - proj;
 	/* proj specifies the transformation of the up axis */
-	proj = proj.SafeNormalized(y);
+	proj = proj.SafeNormalized(mt::axisY3);
 
 	/* Normalized cross product of vec and proj specifies transformation of the right axis */
 	right = mt::cross(proj, vec);

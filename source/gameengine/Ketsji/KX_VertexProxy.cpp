@@ -642,7 +642,7 @@ PyObject *KX_VertexProxy::PySetUV1(PyObject *value)
 
 PyObject *KX_VertexProxy::PyGetUV2()
 {
-	return (m_vertex->getUvSize() > 1) ? PyObjectFrom(mt::vec2(m_vertex->getUV(1))) : PyObjectFrom(mt::vec2(0.0f, 0.0f));
+	return (m_vertex->getUvSize() > 1) ? PyObjectFrom(mt::vec2(m_vertex->getUV(1))) : PyObjectFrom(mt::zero2);
 }
 
 PyObject *KX_VertexProxy::PySetUV2(PyObject *args)

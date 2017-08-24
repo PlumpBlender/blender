@@ -1101,8 +1101,8 @@ void KX_KetsjiEngine::PostProcessScene(KX_Scene *scene)
 			activecam->NodeUpdateGS(0.0f);
 		}
 		else {
-			activecam->NodeSetLocalPosition(mt::vec3(0.0f, 0.0f, 0.0f));
-			activecam->NodeSetLocalOrientation(mt::mat3(mt::vec3(0.0f, 0.0f, 0.0f)));
+			activecam->NodeSetLocalPosition(mt::zero3);
+			activecam->NodeSetLocalOrientation(mt::mat3::Identity());
 			activecam->NodeUpdateGS(0.0f);
 		}
 

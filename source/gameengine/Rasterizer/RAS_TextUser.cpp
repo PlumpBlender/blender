@@ -35,8 +35,8 @@ RAS_TextUser::RAS_TextUser(void *clientobj, RAS_BoundingBox *boundingBox)
 	m_size(0),
 	m_dpi(0),
 	m_aspect(0.0f),
-	m_offset(mt::vec3(0.0f, 0.0f, 0.0f)),
-	m_spacing(mt::vec3(0.0f, 0.0f, 0.0f))
+	m_offset(mt::zero3),
+	m_spacing(mt::zero3)
 {
 }
 

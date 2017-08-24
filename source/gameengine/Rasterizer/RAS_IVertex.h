@@ -194,14 +194,14 @@ public:
 
 	inline void Transform(const mt::mat4& mat, const mt::mat4& nmat)
 	{
-		SetXYZ((mat * mt::vec4(m_localxyz[0], m_localxyz[1], m_localxyz[2], 1.0f)).xyz());
-		SetNormal((nmat * mt::vec4(m_normal[0], m_normal[1], m_normal[2], 1.0f)).xyz());
-		SetTangent((nmat * mt::vec4(m_tangent[0], m_tangent[1], m_tangent[2], 1.0f)));
+		SetXYZ(mat * mt::vec3(m_localxyz));
+		SetNormal(nmat * mt::vec3(m_normal));
+		SetTangent(nmat * mt::vec4(m_tangent));
 	}
 
 	inline void TransformUV(const int index, const mt::mat4& mat)
 	{
-		SetUV(index, (mat * mt::vec4(getUV(index)[0], getUV(index)[1], 0.0f, 1.0f)).xy());
+		SetUV(index, (mat * mt::vec3(getUV(index)[0], getUV(index)[1], 0.0f)).xy());
 	}
 };
 

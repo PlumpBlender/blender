@@ -23,6 +23,12 @@ static const mt::vec2 one2 = mt::kOnes2f;
 static const mt::vec2 axisX2 = mt::kAxisX2f;
 static const mt::vec2 axisY2 = mt::kAxisY2f;
 
+static const mt::vec4 zero4 = mt::kZeros4f;
+static const mt::vec4 one4 = mt::kOnes4f;
+static const mt::vec4 axisX4 = mt::kAxisX4f;
+static const mt::vec4 axisY4 = mt::kAxisY4f;
+static const mt::vec4 axisW4 = mt::kAxisW4f;
+
 }
 
 #endif  // __MATHFU_H__

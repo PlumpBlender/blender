@@ -225,9 +225,9 @@ bool KX_ConstraintActuator::Update(double curtime)
 					// direction and refDirection are identical,
 					// choose any other direction to define plane
 					if (direction[0] < 0.9999f)
-						zaxis = mt::cross(m_refDirVector, mt::vec3(1.0f,0.0f,0.0f));
+						zaxis = mt::cross(m_refDirVector, mt::axisX3);
 					else
-						zaxis = mt::cross(m_refDirVector, mt::vec3(0.0f,1.0f,0.0f));
+						zaxis = mt::cross(m_refDirVector, mt::axisY3);
 				}
 				mt::vec3 yaxis = mt::cross(zaxis, m_refDirVector);
 				yaxis.Normalize();
@@ -292,22 +292,22 @@ bool KX_ConstraintActuator::Update(double curtime)
 			} else {
 				switch (m_locrot) {
 				case KX_ACT_CONSTRAINT_DIRPX:
-					direction = mt::vec3(1.0f,0.0f,0.0f);
+					direction = mt::axisX3;
 					break;
 				case KX_ACT_CONSTRAINT_DIRPY:
-					direction = mt::vec3(0.0f,1.0f,0.0f);
+					direction = mt::axisY3;
 					break;
 				case KX_ACT_CONSTRAINT_DIRPZ:
-					direction = mt::vec3(0.0f,0.0f,1.0f);
+					direction = mt::axisZ3;
 					break;
 				case KX_ACT_CONSTRAINT_DIRNX:
-					direction = mt::vec3(-1.0f,0.0f,0.0f);
+					direction = -mt::axisX3;
 					break;
 				case KX_ACT_CONSTRAINT_DIRNY:
-					direction = mt::vec3(0.0f,-1.0f,0.0f);
+					direction = -mt::axisY3;
 					break;
 				case KX_ACT_CONSTRAINT_DIRNZ:
-					direction = mt::vec3(0.0f,0.0f,-1.0f);
+					direction = -mt::axisZ3;
 					break;
 				}
 			}
@@ -388,27 +388,27 @@ bool KX_ConstraintActuator::Update(double curtime)
 			switch (m_locrot) {
 			case KX_ACT_CONSTRAINT_FHPX:
 				normal = -rotation.GetColumn(0);
-				direction = mt::vec3(1.0f,0.0f,0.0f);
+				direction = mt::axisX3;
 				break;
 			case KX_ACT_CONSTRAINT_FHPY:
 				normal = -rotation.GetColumn(1);
-				direction = mt::vec3(0.0f,1.0f,0.0f);
+				direction = mt::axisY3;
 				break;
 			case KX_ACT_CONSTRAINT_FHPZ:
 				normal = -rotation.GetColumn(2);
-				direction = mt::vec3(0.0f,0.0f,1.0f);
+				direction = mt::axisZ3;
 				break;
 			case KX_ACT_CONSTRAINT_FHNX:
 				normal = rotation.GetColumn(0);
-				direction = mt::vec3(-1.0f,0.0f,0.0f);
+				direction = -mt::axisX3;
 				break;
 			case KX_ACT_CONSTRAINT_FHNY:
 				normal = rotation.GetColumn(1);
-				direction = mt::vec3(0.0f,-1.0f,0.0f);
+				direction = -mt::axisY3;
 				break;
 			case KX_ACT_CONSTRAINT_FHNZ:
 				normal = rotation.GetColumn(2);
-				direction = mt::vec3(0.0f,0.0f,-1.0f);
+				direction = -mt::axisZ3;
 				break;
 			}
 			normal.Normalize();
@@ -477,13 +477,13 @@ bool KX_ConstraintActuator::Update(double curtime)
 			newposition = position = obj->GetSGNode()->GetLocalPosition();
 			switch (m_locrot) {
 			case KX_ACT_CONSTRAINT_LOCX:
-				Clamp(newposition[0], m_minimumBound, m_maximumBound);
+				CLAMP(newposition[0], m_minimumBound, m_maximumBound);
 				break;
 			case KX_ACT_CONSTRAINT_LOCY:
-				Clamp(newposition[1], m_minimumBound, m_maximumBound);
+				CLAMP(newposition[1], m_minimumBound, m_maximumBound);
 				break;
 			case KX_ACT_CONSTRAINT_LOCZ:
-				Clamp(newposition[2], m_minimumBound, m_maximumBound);
+				CLAMP(newposition[2], m_minimumBound, m_maximumBound);
 				break;
 			}
 			result = true;
@@ -507,16 +507,6 @@ bool KX_ConstraintActuator::Update(double curtime)
 		m_currentTime = 0;
 	}
 	return result;
-} /* end of KX_ConstraintActuator::Update(double curtime,double deltatime)   */
-
-void KX_ConstraintActuator::Clamp(float &var, 
-								  float min, 
-								  float max) {
-	if (var < min) {
-		var = min;
-	} else if (var > max) {
-		var = max;
-	}
 }
 
 #ifdef WITH_PYTHON

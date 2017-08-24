@@ -369,7 +369,7 @@ static void GetUvRgba(const RAS_MeshObject::LayerList& layers, unsigned int loop
 	 * when no uv or color layer exist.
 	 */
 	if (uvLayers == 0) {
-		uvs[0] = mt::vec2(0.0f, 0.0f);
+		uvs[0] = mt::zero2;
 	}
 	if (colorLayers == 0) {
 		rgba[0] = 0xFFFFFFFF;
@@ -547,7 +547,7 @@ RAS_MeshObject* BL_ConvertMesh(Mesh* mesh, Object* blenderobj, KX_Scene* scene, 
 
 			const mt::vec3 pt(mvert.co);
 			const mt::vec3 no(normals[j]);
-			const mt::vec4 tan = tangent ? mt::vec4(tangent[j]) : mt::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+			const mt::vec4 tan = tangent ? mt::vec4(tangent[j]) : mt::zero4;
 			mt::vec2 uvs[RAS_Texture::MaxUnits];
 			unsigned int rgba[RAS_Texture::MaxUnits];
 

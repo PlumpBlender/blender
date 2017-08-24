@@ -250,7 +250,7 @@ public:
 			const btVector3 origin = m_vehicle->getWheelTransformWS(wheelIndex).getOrigin();
 			return ToMoto(origin);
 		}
-		return mt::vec3(0.0f, 0.0f, 0.0f);
+		return mt::zero3;
 	}
 
 	virtual mt::quat GetWheelOrientationQuaternion(int wheelIndex) const

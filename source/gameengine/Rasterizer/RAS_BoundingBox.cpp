@@ -30,8 +30,8 @@
 
 RAS_BoundingBox::RAS_BoundingBox(RAS_BoundingBoxManager *manager)
 	:m_modified(false),
-	m_aabbMin(0.0f, 0.0f, 0.0f),
-	m_aabbMax(0.0f, 0.0f, 0.0f),
+	m_aabbMin(mt::zero3),
+	m_aabbMax(mt::zero3),
 	m_users(0),
 	m_manager(manager)
 {

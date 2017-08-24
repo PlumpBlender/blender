@@ -34,7 +34,7 @@
 
 SG_BBox::SG_BBox()
 {
-	Set(mt::vec3(0.0f, 0.0f, 0.0f), mt::vec3(0.0f, 0.0f, 0.0f));
+	Set(mt::zero3, mt::zero3);
 }
 
 SG_BBox::SG_BBox(const mt::vec3 &min, const mt::vec3 &max)

@@ -97,7 +97,7 @@ bool KX_SoftBodyDeformer::Apply(RAS_MeshMaterial *meshmat, RAS_IDisplayArray *ar
 	btSoftBody::tNodeArray&   nodes(softBody->m_nodes);
 
 	if (m_needUpdateAabb) {
-		m_boundingBox->SetAabb(mt::vec3(0.0f, 0.0f, 0.0f), mt::vec3(0.0f, 0.0f, 0.0f));
+		m_boundingBox->SetAabb(mt::zero3, mt::zero3);
 		m_needUpdateAabb = false;
 	}
 
