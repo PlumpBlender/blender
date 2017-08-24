@@ -112,6 +112,9 @@ template <class T>
 inline Matrix<T, 4, 4> PerspectiveHelper(T fovy, T aspect, T znear, T zfar,
                                          T handedness);
 template <class T>
+inline Matrix<T, 4, 4> PerspectiveHelper(T left, T right, T bottom, T top, T znear, T zfar,
+                                         T handedness);
+template <class T>
 static inline Matrix<T, 4, 4> OrthoHelper(T left, T right, T bottom, T top,
                                           T znear, T zfar, T handedness);
 template <class T>
@@ -932,6 +935,21 @@ class Matrix {
     return PerspectiveHelper(fovy, aspect, znear, zfar, handedness);
   }
 
+  /// @brief Create a 4x4 perspective Matrix.
+  ///
+  /// @param left Left extent.
+  /// @param right Right extent.
+  /// @param bottom Bottom extent.
+  /// @param top Top extent.
+  /// @param znear Near plane location.
+  /// @param zfar Far plane location.
+  /// @param handedness 1.0f for RH, -1.0f for LH
+  /// @return 4x4 perspective Matrix.
+  static inline Matrix<T, 4, 4> Perspective(T left, T right, T bottom, T top, T znear, T zfar,
+                                            T handedness = 1) {
+    return PerspectiveHelper(left, right, bottom, top, znear, zfar, handedness);
+  }
+
   /// @brief Create a 4x4 orthographic Matrix.
   ///
   /// @param left Left extent.
@@ -1696,6 +1714,22 @@ inline Matrix<T, 4, 4> PerspectiveHelper(T fovy, T aspect, T znear, T zfar,
   return Matrix<T, 4, 4>(x, 0, 0, 0, 0, y, 0, 0, 0, 0,
                          zfar_per_zdist * handedness, -1 * handedness, 0, 0,
                          2.0f * znear * zfar_per_zdist, 0);
+}
+/// @endcond
+
+/// @cond MATHFU_INTERNAL
+/// Create a 4x4 perpective matrix.
+template <class T>
+inline Matrix<T, 4, 4> PerspectiveHelper(T left, T right, T bottom, T top, T znear, T zfar,
+                                         T handedness) {
+  const T x = right - left;
+  const T y = top - bottom;
+  const T z = zfar - znear;
+
+  return Matrix<T, 4, 4>(znear * 2 / x, 0, 0, 0,
+                         0, znear * 2 / y, 0, 0,
+                         (right + left) / x, (top + bottom) / y, -(zfar + znear) / z, -1,
+                         0, 0, (-2 * znear * zfar) / z, 0);
 }
 /// @endcond
 

@@ -393,6 +393,15 @@ class Matrix<float, 4> {
     return PerspectiveHelper(fovy, aspect, znear, zfar, handedness);
   }
 
+  /// Create a 4x4 perpective matrix.
+  /// @handedness: 1.0f for RH, -1.0f for LH
+  static inline Matrix<float, 4, 4> Perspective(float left, float right,
+												float bottom, float top,
+                                                float znear, float zfar,
+                                                float handedness = 1.0f) {
+    return PerspectiveHelper(left, right, bottom, top, znear, zfar, handedness);
+  }
+
   /// Create a 4x4 orthographic matrix.
   /// @param handedness 1.0f for RH, -1.0f for LH
   static inline Matrix<float, 4, 4> Ortho(float left, float right, float bottom,
