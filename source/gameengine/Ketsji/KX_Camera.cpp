@@ -881,40 +881,20 @@ KX_PYMETHODDEF_DOC_VARARGS(KX_Camera, getScreenVect,
 
 	y = 1.0 - y; //to follow Blender window coordinate system (Top-Down)
 
-	mt::vec3 vect;
-	mt::vec3 campos, screenpos;
-
-	const GLint *viewport;
-	GLdouble win[3];
-	GLdouble dmodelmatrix[16];
-	GLdouble dprojmatrix[16];
-
 	const mt::mat4 modelmatrix = mt::mat4::FromAffineTransform(GetWorldToCamera());
 	const mt::mat4& projmatrix = this->GetProjectionMatrix();
 
-	for (unsigned short i = 0; i < 16; ++i) {
-		dmodelmatrix[i] = modelmatrix[i];
-		dprojmatrix[i] = projmatrix[i];
-	}
+	RAS_ICanvas *canvas = KX_GetActiveEngine()->GetCanvas();
+	const int width = canvas->GetWidth();
+	const int height = canvas->GetHeight();
 
-	viewport = KX_GetActiveEngine()->GetCanvas()->GetViewPort();
+	const mt::vec3 vect(x * width, y * height, 0.0f);
 
-	vect[0] = x * viewport[2];
-	vect[1] = y * viewport[3];
+	const mt::vec3 screenpos = mt::mat4::UnProject(vect, modelmatrix, projmatrix, width, height);
 
-	vect[0] += viewport[0];
-	vect[1] += viewport[1];
+	const mt::vec3 ret = (NodeGetLocalPosition() - screenpos).Normalized();
 
-	vect[2] = 0.f;
-
-	gluUnProject(vect[0], vect[1], vect[2], dmodelmatrix, dprojmatrix, viewport, &win[0], &win[1], &win[2]);
-
-	campos = NodeGetWorldPosition();
-	screenpos = mt::vec3(win[0], win[1], win[2]);
-	vect = campos-screenpos;
-
-	vect.Normalize();
-	return PyObjectFrom(vect);
+	return PyObjectFrom(ret);
 }
 
 KX_PYMETHODDEF_DOC_VARARGS(KX_Camera, getScreenRay,
