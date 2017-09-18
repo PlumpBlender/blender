@@ -1828,10 +1828,10 @@ void KX_GameObject_Mathutils_Callback_Init(void)
 #ifdef WITH_PYTHON
 /* ------- python stuff ---------------------------------------------------*/
 PyMethodDef KX_GameObject::Methods[] = {
-	{"applyForce", (PyCFunction)	KX_GameObject::sPyApplyForce, METH_VARARGS},
-	{"applyTorque", (PyCFunction)	KX_GameObject::sPyApplyTorque, METH_VARARGS},
-	{"applyRotation", (PyCFunction)	KX_GameObject::sPyApplyRotation, METH_VARARGS},
-	{"applyMovement", (PyCFunction)	KX_GameObject::sPyApplyMovement, METH_VARARGS},
+	{"applyForce", (PyCFunction)	KX_GameObject::sPyApplyForce, METH_VARARGS | METH_KEYWORDS},
+	{"applyTorque", (PyCFunction)	KX_GameObject::sPyApplyTorque, METH_VARARGS | METH_KEYWORDS},
+	{"applyRotation", (PyCFunction)	KX_GameObject::sPyApplyRotation, METH_VARARGS | METH_KEYWORDS},
+	{"applyMovement", (PyCFunction)	KX_GameObject::sPyApplyMovement, METH_VARARGS | METH_KEYWORDS},
 	{"getLinearVelocity", (PyCFunction) KX_GameObject::sPyGetLinearVelocity, METH_VARARGS},
 	{"setLinearVelocity", (PyCFunction) KX_GameObject::sPySetLinearVelocity, METH_VARARGS},
 	{"getAngularVelocity", (PyCFunction) KX_GameObject::sPyGetAngularVelocity, METH_VARARGS},
@@ -1847,7 +1847,7 @@ PyMethodDef KX_GameObject::Methods[] = {
 	{"restoreDynamics", (PyCFunction)KX_GameObject::sPyRestoreDynamics,METH_NOARGS},
 	{"enableRigidBody", (PyCFunction)KX_GameObject::sPyEnableRigidBody,METH_NOARGS},
 	{"disableRigidBody", (PyCFunction)KX_GameObject::sPyDisableRigidBody,METH_NOARGS},
-	{"applyImpulse", (PyCFunction) KX_GameObject::sPyApplyImpulse, METH_VARARGS},
+	{"applyImpulse", (PyCFunction) KX_GameObject::sPyApplyImpulse, METH_VARARGS | METH_KEYWORDS},
 	{"setCollisionMargin", (PyCFunction) KX_GameObject::sPySetCollisionMargin, METH_O},
 	{"setParent", (PyCFunction)KX_GameObject::sPySetParent,METH_VARARGS},
 	{"setVisible",(PyCFunction) KX_GameObject::sPySetVisible, METH_VARARGS},
@@ -3243,12 +3243,16 @@ int KX_GameObject::pyattr_set_lodManager(PyObjectPlus *self_v, const KX_PYATTRIB
 	return PY_SET_ATTR_SUCCESS;
 }
 
-PyObject *KX_GameObject::PyApplyForce(PyObject *args)
+PyObject *KX_GameObject::PyApplyForce(PyObject *args, PyObject *kwds)
 {
 	int local = 0;
 	PyObject *pyvect;
 
-	if (PyArg_ParseTuple(args, "O|i:applyForce", &pyvect, &local)) {
+    static const char *kwlist[] = {"force", "local", nullptr};
+	if (PyArg_ParseTupleAndKeywords(
+	    args, kwds, "O|i:applyForce", const_cast<char**>(kwlist),
+	    &pyvect, &local
+	)) {
 		MT_Vector3 force;
 		if (PyVecTo(pyvect, force)) {
 			ApplyForce(force, (local!=0));
@@ -3258,12 +3262,16 @@ PyObject *KX_GameObject::PyApplyForce(PyObject *args)
 	return nullptr;
 }
 
-PyObject *KX_GameObject::PyApplyTorque(PyObject *args)
+PyObject *KX_GameObject::PyApplyTorque(PyObject *args, PyObject *kwds)
 {
 	int local = 0;
 	PyObject *pyvect;
 
-	if (PyArg_ParseTuple(args, "O|i:applyTorque", &pyvect, &local)) {
+    static const char *kwlist[] = {"torque", "local", nullptr};
+	if (PyArg_ParseTupleAndKeywords(
+	    args, kwds, "O|i:applyTorque", const_cast<char**>(kwlist),
+	    &pyvect, &local
+	)) {
 		MT_Vector3 torque;
 		if (PyVecTo(pyvect, torque)) {
 			ApplyTorque(torque, (local!=0));
@@ -3273,12 +3281,16 @@ PyObject *KX_GameObject::PyApplyTorque(PyObject *args)
 	return nullptr;
 }
 
-PyObject *KX_GameObject::PyApplyRotation(PyObject *args)
+PyObject *KX_GameObject::PyApplyRotation(PyObject *args, PyObject *kwds)
 {
 	int local = 0;
 	PyObject *pyvect;
 
-	if (PyArg_ParseTuple(args, "O|i:applyRotation", &pyvect, &local)) {
+    static const char *kwlist[] = {"rotation", "local", nullptr};
+	if (PyArg_ParseTupleAndKeywords(
+	    args, kwds, "O|i:applyRotation", const_cast<char**>(kwlist),
+	    &pyvect, &local
+	)) {
 		MT_Vector3 rotation;
 		if (PyVecTo(pyvect, rotation)) {
 			ApplyRotation(rotation, (local!=0));
@@ -3288,12 +3300,16 @@ PyObject *KX_GameObject::PyApplyRotation(PyObject *args)
 	return nullptr;
 }
 
-PyObject *KX_GameObject::PyApplyMovement(PyObject *args)
+PyObject *KX_GameObject::PyApplyMovement(PyObject *args, PyObject *kwds)
 {
 	int local = 0;
 	PyObject *pyvect;
 
-	if (PyArg_ParseTuple(args, "O|i:applyMovement", &pyvect, &local)) {
+    static const char *kwlist[] = {"movement", "local", nullptr};
+	if (PyArg_ParseTupleAndKeywords(
+	        args, kwds, "O|i:applyMovement", const_cast<char**>(kwlist),
+	        &pyvect, &local
+	    )) {
 		MT_Vector3 movement;
 		if (PyVecTo(pyvect, movement)) {
 			ApplyMovement(movement, (local!=0));
@@ -3483,7 +3499,7 @@ PyObject *KX_GameObject::PySetCollisionMargin(PyObject *value)
 
 
 
-PyObject *KX_GameObject::PyApplyImpulse(PyObject *args)
+PyObject *KX_GameObject::PyApplyImpulse(PyObject *args, PyObject *kwds)
 {
 	PyObject *pyattach;
 	PyObject *pyimpulse;
@@ -3491,7 +3507,11 @@ PyObject *KX_GameObject::PyApplyImpulse(PyObject *args)
 
 	PYTHON_CHECK_PHYSICS_CONTROLLER(this, "applyImpulse", nullptr);
 
-	if (PyArg_ParseTuple(args, "OO|i:applyImpulse", &pyattach, &pyimpulse, &local))
+    static const char *kwlist[] = {"point", "impulse", "local", nullptr};
+	if (PyArg_ParseTupleAndKeywords(
+	    args, kwds, "OO|i:applyImpulse", const_cast<char**>(kwlist),
+	    &pyattach, &pyimpulse, &local
+	))
 	{
 		MT_Vector3  attach;
 		MT_Vector3 impulse;
