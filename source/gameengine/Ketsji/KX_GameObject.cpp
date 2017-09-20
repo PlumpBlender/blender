@@ -3253,8 +3253,7 @@ PyObject *KX_GameObject::PyApplyForce(PyObject *args)
 	int local = 0;
 	PyObject *pyvect;
 
-	if (PyArg_ParseTuple(args, "O|i:applyForce", &pyvect, &local))
-	{
+	if (PyArg_ParseTuple(args, "O|i:applyForce", &pyvect, &local)) {
 		MT_Vector3 force;
 		if (PyVecTo(pyvect, force)) {
 			ApplyForce(force, (local!=0));
@@ -3269,8 +3268,7 @@ PyObject *KX_GameObject::PyApplyTorque(PyObject *args)
 	int local = 0;
 	PyObject *pyvect;
 
-	if (PyArg_ParseTuple(args, "O|i:applyTorque", &pyvect, &local))
-	{
+	if (PyArg_ParseTuple(args, "O|i:applyTorque", &pyvect, &local)) {
 		MT_Vector3 torque;
 		if (PyVecTo(pyvect, torque)) {
 			ApplyTorque(torque, (local!=0));
@@ -3285,8 +3283,7 @@ PyObject *KX_GameObject::PyApplyRotation(PyObject *args)
 	int local = 0;
 	PyObject *pyvect;
 
-	if (PyArg_ParseTuple(args, "O|i:applyRotation", &pyvect, &local))
-	{
+	if (PyArg_ParseTuple(args, "O|i:applyRotation", &pyvect, &local)) {
 		MT_Vector3 rotation;
 		if (PyVecTo(pyvect, rotation)) {
 			ApplyRotation(rotation, (local!=0));
@@ -3301,8 +3298,7 @@ PyObject *KX_GameObject::PyApplyMovement(PyObject *args)
 	int local = 0;
 	PyObject *pyvect;
 
-	if (PyArg_ParseTuple(args, "O|i:applyMovement", &pyvect, &local))
-	{
+	if (PyArg_ParseTuple(args, "O|i:applyMovement", &pyvect, &local)) {
 		MT_Vector3 movement;
 		if (PyVecTo(pyvect, movement)) {
 			ApplyMovement(movement, (local!=0));
@@ -3317,12 +3313,9 @@ PyObject *KX_GameObject::PyGetLinearVelocity(PyObject *args)
 	// only can get the velocity if we have a physics object connected to us...
 	int local = 0;
 
-	if (PyArg_ParseTuple(args, "|i:getLinearVelocity", &local))
-	{
+	if (PyArg_ParseTuple(args, "|i:getLinearVelocity", &local)) {
 		return PyObjectFrom(GetLinearVelocity((local!=0)));
-	}
-	else
-	{
+	} else {
 		return nullptr;
 	}
 }
@@ -3332,8 +3325,7 @@ PyObject *KX_GameObject::PySetLinearVelocity(PyObject *args)
 	int local = 0;
 	PyObject *pyvect;
 
-	if (PyArg_ParseTuple(args, "O|i:setLinearVelocity", &pyvect,&local))
-	{
+	if (PyArg_ParseTuple(args, "O|i:setLinearVelocity", &pyvect,&local)) {
 		MT_Vector3 velocity;
 		if (PyVecTo(pyvect, velocity)) {
 			setLinearVelocity(velocity, (local!=0));
@@ -3348,12 +3340,9 @@ PyObject *KX_GameObject::PyGetAngularVelocity(PyObject *args)
 	// only can get the velocity if we have a physics object connected to us...
 	int local = 0;
 
-	if (PyArg_ParseTuple(args, "|i:getAngularVelocity", &local))
-	{
+	if (PyArg_ParseTuple(args, "|i:getAngularVelocity", &local)) {
 		return PyObjectFrom(GetAngularVelocity((local!=0)));
-	}
-	else
-	{
+	} else {
 		return nullptr;
 	}
 }
@@ -3363,8 +3352,7 @@ PyObject *KX_GameObject::PySetAngularVelocity(PyObject *args)
 	int local = 0;
 	PyObject *pyvect;
 
-	if (PyArg_ParseTuple(args, "O|i:setAngularVelocity", &pyvect, &local))
-	{
+	if (PyArg_ParseTuple(args, "O|i:setAngularVelocity", &pyvect, &local)) {
 		MT_Vector3 velocity;
 		if (PyVecTo(pyvect, velocity)) {
 			setAngularVelocity(velocity, (local!=0));
@@ -3393,8 +3381,7 @@ PyObject *KX_GameObject::PySetDamping(PyObject *args, PyObject *kwds)
 PyObject *KX_GameObject::PySetVisible(PyObject *args)
 {
 	int visible, recursive = 0;
-	if (!PyArg_ParseTuple(args, "i|i:setVisible", &visible, &recursive))
-	{
+	if (!PyArg_ParseTuple(args, "i|i:setVisible", &visible, &recursive)) {
 		return nullptr;
 	}
 	
@@ -3407,8 +3394,7 @@ PyObject *KX_GameObject::PySetOcclusion(PyObject *args)
 {
 	int occlusion, recursive = 0;
 
-	if (!PyArg_ParseTuple(args, "i|i:setOcclusion", &occlusion, &recursive))
-	{
+	if (!PyArg_ParseTuple(args, "i|i:setOcclusion", &occlusion, &recursive)) {
 		return nullptr;
 	}
 	
@@ -3422,8 +3408,7 @@ PyObject *KX_GameObject::PyGetVelocity(PyObject *args)
 	MT_Vector3 point(0.0f,0.0f,0.0f);
 	PyObject *pypos = nullptr;
 
-	if (!PyArg_ParseTuple(args, "|O:getVelocity", &pypos) || (pypos && !PyVecTo(pypos, point)))
-	{
+	if (!PyArg_ParseTuple(args, "|O:getVelocity", &pypos) || (pypos && !PyVecTo(pypos, point))) {
 		return nullptr;
 	}
 
@@ -3476,8 +3461,7 @@ PyObject *KX_GameObject::PySetParent(PyObject *args, PyObject *kwds)
 	if (!PyArg_ParseTupleAndKeywords(
 	    args, kwds, "O|ii:setParent", const_cast<char**>(kwlist),
 	    &pyobj, &addToCompound, &ghost
-	))
-	{
+	)) {
 		return nullptr; // Python sets a simple error
 	}
 	if (!ConvertPythonToGameObject(logicmgr, pyobj, &obj, true, "gameOb.setParent(obj): KX_GameObject"))
@@ -3524,8 +3508,7 @@ PyObject *KX_GameObject::PyApplyImpulse(PyObject *args, PyObject *kwds)
 	if (PyArg_ParseTupleAndKeywords(
 	    args, kwds, "OO|i:applyImpulse", const_cast<char**>(kwlist),
 	    &pyattach, &pyimpulse, &local
-	))
-	{
+	)) {
 		MT_Vector3  attach;
 		MT_Vector3 impulse;
 		if (PyVecTo(pyattach, attach) && PyVecTo(pyimpulse, impulse))
@@ -3543,8 +3526,7 @@ PyObject *KX_GameObject::PySuspendPhysics(PyObject *args)
 {
 	int freeConstraints = false;
 
-	if (!PyArg_ParseTuple(args, "|i:suspendPhysics", &freeConstraints))
-	{
+	if (!PyArg_ParseTuple(args, "|i:suspendPhysics", &freeConstraints)) {
 		return nullptr;
 	}
 
@@ -3566,8 +3548,7 @@ PyObject *KX_GameObject::PySuspendDynamics(PyObject *args)
 {
 	bool ghost = false;
 
-	if (!PyArg_ParseTuple(args, "|b", &ghost))
-    {
+	if (!PyArg_ParseTuple(args, "|b", &ghost)) {
 		return nullptr;
 	}
 
@@ -3598,8 +3579,7 @@ PyObject *KX_GameObject::PyAlignAxisToVect(PyObject *args, PyObject *kwds)
 	if (PyArg_ParseTupleAndKeywords(
 	    args, kwds, "O|if:alignAxisToVect", const_cast<char**>(kwlist),
 	    &pyvect, &axis, &fac
-	))
-	{
+	)) {
 		MT_Vector3 vect;
 		if (PyVecTo(pyvect, vect)) {
 			if (fac > 0.0f) {
@@ -3791,8 +3771,7 @@ KX_PYMETHODDEF_DOC(KX_GameObject, rayCastTo,
 	SCA_LogicManager *logicmgr = GetScene()->GetLogicManager();
 
     static const char *kwlist[] = {"other", "dist", "prop", nullptr};
-	if (!PyArg_ParseTupleAndKeywords(args, kwds, "O|fs:rayCastTo",  const_cast<char**>(kwlist), &pyarg, &dist, &propName))
-	{
+	if (!PyArg_ParseTupleAndKeywords(args, kwds, "O|fs:rayCastTo",  const_cast<char**>(kwlist), &pyarg, &dist, &propName)) {
 		return nullptr; // python sets simple error
 	}
 
@@ -3914,8 +3893,7 @@ KX_PYMETHODDEF_DOC(KX_GameObject, rayCast,
 	if (!PyArg_ParseTupleAndKeywords(
 	        args, kwds, "O|Ofsiiii:rayCast", const_cast<char**>(kwlist),
 	        &pyto, &pyfrom, &dist, &propName, &face, &xray, &poly, &mask // arg
-	))
-	{
+	)) {
 		return nullptr; // Python sets a simple error
 	}
 
@@ -4038,10 +4016,9 @@ KX_PYMETHODDEF_DOC(KX_GameObject, sendMessage,
 	char* to = (char *)"";
 
 	static const char *kwlist[] = {"subject", "body", "to", nullptr};
-	if (!PyArg_ParseTupleAndKeywords(args, kwds, "s|ss:sendMessage", const_cast<char**>(kwlist), &subject, &body, &to))
-    {
+	if (!PyArg_ParseTupleAndKeywords(args, kwds, "s|ss:sendMessage", const_cast<char**>(kwlist), &subject, &body, &to)) {
 		return nullptr;
-    }
+	}
 	
 	GetScene()->GetNetworkMessageScene()->SendMessage(to, this, subject, body);
 	Py_RETURN_NONE;
@@ -4108,10 +4085,9 @@ KX_PYMETHODDEF_DOC(KX_GameObject, stopAction,
 {
 	short layer = 0;
 
-	if (!PyArg_ParseTuple(args, "|h:stopAction", &layer))
-    {
+	if (!PyArg_ParseTuple(args, "|h:stopAction", &layer)) {
 		return nullptr;
-    }
+	}
 
 	layer_check(layer, "stopAction");
 
@@ -4126,8 +4102,7 @@ KX_PYMETHODDEF_DOC(KX_GameObject, getActionFrame,
 {
 	short layer = 0;
 
-	if (!PyArg_ParseTuple(args, "|h:getActionFrame", &layer))
-	{
+	if (!PyArg_ParseTuple(args, "|h:getActionFrame", &layer)) {
 		return nullptr;
 	}
 
@@ -4142,8 +4117,7 @@ KX_PYMETHODDEF_DOC(KX_GameObject, getActionName,
 {
 	short layer = 0;
 
-	if (!PyArg_ParseTuple(args, "|h:getActionName", &layer))
-	{
+	if (!PyArg_ParseTuple(args, "|h:getActionName", &layer)) {
 		return nullptr;
 	}
 
@@ -4159,8 +4133,7 @@ KX_PYMETHODDEF_DOC(KX_GameObject, setActionFrame,
 	short layer = 0;
 	float frame;
 
-	if (!PyArg_ParseTuple(args, "f|h:setActionFrame", &frame, &layer))
-	{
+	if (!PyArg_ParseTuple(args, "f|h:setActionFrame", &frame, &layer)) {
 		return nullptr;
 	}
 
@@ -4177,8 +4150,7 @@ KX_PYMETHODDEF_DOC(KX_GameObject, isPlayingAction,
 {
 	short layer = 0;
 
-	if (!PyArg_ParseTuple(args, "|h:isPlayingAction", &layer))
-	{
+	if (!PyArg_ParseTuple(args, "|h:isPlayingAction", &layer)) {
 		return nullptr;
 	}
 
@@ -4196,10 +4168,9 @@ KX_PYMETHODDEF_DOC(KX_GameObject, addDebugProperty,
 	char *name;
 	int visible = 1;
 
-	if (!PyArg_ParseTuple(args, "s|i:debugProperty", &name , &visible))
-    {
+	if (!PyArg_ParseTuple(args, "s|i:debugProperty", &name , &visible)) {
 		return nullptr;
-    }
+	}
 
 	if (visible) {
 		if (!scene->PropertyInDebugList(this, name))
@@ -4223,8 +4194,7 @@ PyObject *KX_GameObject::Pyget(PyObject *args)
 	PyObject *def = Py_None;
 	PyObject *ret;
 
-	if (!PyArg_ParseTuple(args, "O|O:get", &key, &def))
-	{
+	if (!PyArg_ParseTuple(args, "O|O:get", &key, &def)) {
 		return nullptr;
 	}
 	
