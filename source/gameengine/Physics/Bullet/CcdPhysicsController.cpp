@@ -189,8 +189,11 @@ CcdPhysicsController::CcdPhysicsController(const CcdConstructionInfo& ci)
 	m_collisionShape = ci.m_collisionShape;
 	// apply scaling before creating rigid body
 	m_collisionShape->setLocalScaling(m_cci.m_scaling);
-	if (m_cci.m_mass)
-		m_collisionShape->calculateLocalInertia(m_cci.m_mass, m_cci.m_localInertiaTensor);
+	if (m_cci.m_mass) {
+		btVector3 inertia = m_cci.m_localInertiaTensor * m_cci.m_inertiaFactor;
+		m_collisionShape->calculateLocalInertia(m_cci.m_mass, inertia);
+	}
+
 	// shape info is shared, increment ref count
 	m_shapeInfo = ci.m_shapeInfo;
 	if (m_shapeInfo)
@@ -827,8 +830,10 @@ void CcdPhysicsController::PostProcessReplica(class PHY_IMotionState *motionstat
 			//m_collisionShape->setMargin(m_cci.m_margin);
 			m_collisionShape->setLocalScaling(m_cci.m_scaling);
 
-			if (m_cci.m_mass)
-				m_collisionShape->calculateLocalInertia(m_cci.m_mass, m_cci.m_localInertiaTensor);
+			if (m_cci.m_mass) {
+				btVector3 inertia = m_cci.m_localInertiaTensor * m_cci.m_inertiaFactor;
+				m_collisionShape->calculateLocalInertia(m_cci.m_mass, inertia);
+			}
 		}
 	}
 
@@ -1105,8 +1110,9 @@ void CcdPhysicsController::SetScaling(const MT_Vector3& scale)
 
 			btRigidBody *body = GetRigidBody();
 			if (body && m_cci.m_mass) {
-				body->getCollisionShape()->calculateLocalInertia(m_cci.m_mass, m_cci.m_localInertiaTensor);
-				body->setMassProps(m_cci.m_mass, m_cci.m_localInertiaTensor * m_cci.m_inertiaFactor);
+				btVector3 inertia = m_cci.m_localInertiaTensor * m_cci.m_inertiaFactor;
+				body->getCollisionShape()->calculateLocalInertia(m_cci.m_mass, inertia);
+				body->setMassProps(m_cci.m_mass, inertia);
 			}
 		}
 	}
