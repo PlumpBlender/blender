@@ -1015,7 +1015,7 @@ base class --- :class:`SCA_IObject`
       Return the value matching key, or the default value if its not found.
       :arg key: the matching key
       :type key: string
-      :arg default: optional default value is the key isn't matching, defaults to None is no value passed.
+      :arg default: optional default value is the key isn't matching, defaults to None if no value passed.
       :return: The key value or a default.
 
    .. method:: playAction(name, start_frame, end_frame, layer=0, priority=0, blendin=0, play_mode=KX_ACTION_MODE_PLAY, layer_weight=0.0, ipo_flags=0, speed=1.0, blend_mode=KX_ACTION_BLEND_BLEND)
