@@ -1837,7 +1837,7 @@ PyMethodDef KX_GameObject::Methods[] = {
 	{"getAngularVelocity", (PyCFunction) KX_GameObject::sPyGetAngularVelocity, METH_VARARGS},
 	{"setAngularVelocity", (PyCFunction) KX_GameObject::sPySetAngularVelocity, METH_VARARGS},
 	{"getVelocity", (PyCFunction) KX_GameObject::sPyGetVelocity, METH_VARARGS},
-	{"setDamping", (PyCFunction) KX_GameObject::sPySetDamping, METH_VARARGS | METH_KEYWORDS},
+	{"setDamping", (PyCFunction) KX_GameObject::sPySetDamping, METH_VARARGS},
 	{"getReactionForce", (PyCFunction) KX_GameObject::sPyGetReactionForce, METH_NOARGS},
 	{"alignAxisToVect",(PyCFunction) KX_GameObject::sPyAlignAxisToVect, METH_VARARGS | METH_KEYWORDS},
 	{"getAxisVect",(PyCFunction) KX_GameObject::sPyGetAxisVect, METH_O},
@@ -1847,7 +1847,7 @@ PyMethodDef KX_GameObject::Methods[] = {
 	{"restoreDynamics", (PyCFunction)KX_GameObject::sPyRestoreDynamics,METH_NOARGS},
 	{"enableRigidBody", (PyCFunction)KX_GameObject::sPyEnableRigidBody,METH_NOARGS},
 	{"disableRigidBody", (PyCFunction)KX_GameObject::sPyDisableRigidBody,METH_NOARGS},
-	{"applyImpulse", (PyCFunction) KX_GameObject::sPyApplyImpulse, METH_VARARGS | METH_KEYWORDS},
+	{"applyImpulse", (PyCFunction) KX_GameObject::sPyApplyImpulse, METH_VARARGS},
 	{"setCollisionMargin", (PyCFunction) KX_GameObject::sPySetCollisionMargin, METH_O},
 	{"setParent", (PyCFunction)KX_GameObject::sPySetParent,METH_VARARGS | METH_KEYWORDS},
 	{"setVisible",(PyCFunction) KX_GameObject::sPySetVisible, METH_VARARGS},
@@ -1954,11 +1954,11 @@ PyObject *KX_GameObject::PyReplaceMesh(PyObject *args, PyObject *kwds)
 	RAS_MeshObject *new_mesh;
 
 	static const char *kwlist[] = {"mesh", "useDisplayMesh", "usePhysicsMesh", nullptr};
-	if (!PyArg_ParseTupleAndKeywords(
-	        args, kwds, "O|ii:replaceMesh", const_cast<char**>(kwlist),
-	        &value, &use_gfx, &use_phys
-	    ))
+	if (!PyArg_ParseTupleAndKeywords(args, kwds, "O|ii:replaceMesh", const_cast<char**>(kwlist),
+	        &value, &use_gfx, &use_phys))
+	{
 		return nullptr;
+	}
 	
 	if (!ConvertPythonToMesh(logicmgr, value, &new_mesh, false, "gameOb.replaceMesh(value): KX_GameObject"))
 		return nullptr;
@@ -1985,10 +1985,7 @@ PyObject *KX_GameObject::PyReinstancePhysicsMesh(PyObject *args, PyObject *kwds)
 	PyObject *mesh_py= nullptr;
 
     static const char *kwlist[] = {"gameObject", "meshObject", "dupli", nullptr};
-	if (!PyArg_ParseTupleAndKeywords(
-            args, kwds, "|OOi:reinstancePhysicsMesh", const_cast<char**>(kwlist),
-            &gameobj_py, &mesh_py, &dupli
-	    ) ||
+	if (!PyArg_ParseTupleAndKeywords(args, kwds, "|OOi:reinstancePhysicsMesh", const_cast<char**>(kwlist), &gameobj_py, &mesh_py, &dupli) ||
 		(gameobj_py && !ConvertPythonToGameObject(logicmgr, gameobj_py, &gameobj, true, "gameOb.reinstancePhysicsMesh(obj, mesh, dupli): KX_GameObject")) ||
 		(mesh_py && !ConvertPythonToMesh(logicmgr, mesh_py, &mesh, true, "gameOb.reinstancePhysicsMesh(obj, mesh, dupli): KX_GameObject")))
 	{
@@ -3315,7 +3312,8 @@ PyObject *KX_GameObject::PyGetLinearVelocity(PyObject *args)
 
 	if (PyArg_ParseTuple(args, "|i:getLinearVelocity", &local)) {
 		return PyObjectFrom(GetLinearVelocity((local!=0)));
-	} else {
+	}
+	else {
 		return nullptr;
 	}
 }
@@ -3362,17 +3360,15 @@ PyObject *KX_GameObject::PySetAngularVelocity(PyObject *args)
 	return nullptr;
 }
 
-PyObject *KX_GameObject::PySetDamping(PyObject *args, PyObject *kwds)
+PyObject *KX_GameObject::PySetDamping(PyObject *args)
 {
 	float linear;
 	float angular;
 
-    static const char *kwlist[] = {"linear_damping", "angular_damping", nullptr};
-	if (!PyArg_ParseTupleAndKeywords(
-	    args, kwds, "ff|i:setDamping", const_cast<char**>(kwlist),
-	    &linear, &angular
-	))
+	if (!PyArg_ParseTuple(
+	    args, "ff:setDamping", &linear, &angular)) {
 		return nullptr;
+	}
 
 	setDamping(linear, angular);
 	Py_RETURN_NONE;
@@ -3458,10 +3454,7 @@ PyObject *KX_GameObject::PySetParent(PyObject *args, PyObject *kwds)
 	int addToCompound=1, ghost=1;
 
 	static const char *kwlist[] = {"parent", "compound", "ghost", nullptr};
-	if (!PyArg_ParseTupleAndKeywords(
-	    args, kwds, "O|ii:setParent", const_cast<char**>(kwlist),
-	    &pyobj, &addToCompound, &ghost
-	)) {
+	if (!PyArg_ParseTupleAndKeywords(args, kwds, "O|ii:setParent", const_cast<char**>(kwlist), &pyobj, &addToCompound, &ghost)) {
 		return nullptr; // Python sets a simple error
 	}
 	if (!ConvertPythonToGameObject(logicmgr, pyobj, &obj, true, "gameOb.setParent(obj): KX_GameObject"))
@@ -3496,19 +3489,14 @@ PyObject *KX_GameObject::PySetCollisionMargin(PyObject *value)
 
 
 
-PyObject *KX_GameObject::PyApplyImpulse(PyObject *args, PyObject *kwds)
+PyObject *KX_GameObject::PyApplyImpulse(PyObject *args)
 {
 	PyObject *pyattach;
 	PyObject *pyimpulse;
 	int local = 0;
 
 	PYTHON_CHECK_PHYSICS_CONTROLLER(this, "applyImpulse", nullptr);
-
-    static const char *kwlist[] = {"point", "impulse", "local", nullptr};
-	if (PyArg_ParseTupleAndKeywords(
-	    args, kwds, "OO|i:applyImpulse", const_cast<char**>(kwlist),
-	    &pyattach, &pyimpulse, &local
-	)) {
+	if (PyArg_ParseTuple(args, "OO|i:applyImpulse", &pyattach, &pyimpulse, &local)) {
 		MT_Vector3  attach;
 		MT_Vector3 impulse;
 		if (PyVecTo(pyattach, attach) && PyVecTo(pyimpulse, impulse))
@@ -3576,10 +3564,7 @@ PyObject *KX_GameObject::PyAlignAxisToVect(PyObject *args, PyObject *kwds)
 	float fac = 1.0f;
 
 	static const char *kwlist[] = {"vect", "axis", "factor", nullptr};
-	if (PyArg_ParseTupleAndKeywords(
-	    args, kwds, "O|if:alignAxisToVect", const_cast<char**>(kwlist),
-	    &pyvect, &axis, &fac
-	)) {
+	if (PyArg_ParseTupleAndKeywords(args, kwds, "O|if:alignAxisToVect", const_cast<char**>(kwlist), &pyvect, &axis, &fac)) {
 		MT_Vector3 vect;
 		if (PyVecTo(pyvect, vect)) {
 			if (fac > 0.0f) {
@@ -3880,7 +3865,7 @@ KX_PYMETHODDEF_DOC(KX_GameObject, rayCast,
 	MT_Vector3 toPoint;
 	MT_Vector3 fromPoint;
 	PyObject *pyto;
-	PyObject *pyfrom = nullptr;
+	PyObject *pyfrom = Py_None;
 	float dist = 0.0f;
 	const char *propName = "";
 	KX_GameObject *other;
@@ -3888,12 +3873,10 @@ KX_PYMETHODDEF_DOC(KX_GameObject, rayCast,
 	int mask = (1 << OB_MAX_COL_MASKS) - 1;
 	SCA_LogicManager *logicmgr = GetScene()->GetLogicManager();
 
-    // keywords taken from Python API on web.
     static const char *kwlist[] = {"objto", "objfrom", "dist", "prop", "face", "xray", "poly", "mask", nullptr};
-	if (!PyArg_ParseTupleAndKeywords(
-	        args, kwds, "O|Ofsiiii:rayCast", const_cast<char**>(kwlist),
-	        &pyto, &pyfrom, &dist, &propName, &face, &xray, &poly, &mask // arg
-	)) {
+	if (!PyArg_ParseTupleAndKeywords(args, kwds, "O|Ofsiiii:rayCast", const_cast<char**>(kwlist), &pyto, &pyfrom,
+		&dist, &propName, &face, &xray, &poly, &mask))
+	{
 		return nullptr; // Python sets a simple error
 	}
 
@@ -3910,7 +3893,7 @@ KX_PYMETHODDEF_DOC(KX_GameObject, rayCast,
 			return nullptr;
 		}
 	}
-	if (!pyfrom || pyfrom == Py_None)
+	if (pyfrom == Py_None)
 	{
 		fromPoint = NodeGetWorldPosition();
 	}
@@ -4049,7 +4032,9 @@ KX_PYMETHODDEF_DOC(KX_GameObject, playAction,
 
 	if (!PyArg_ParseTupleAndKeywords(args, kwds, "sff|hhfhfhfh:playAction", const_cast<char**>(kwlist),
 									&name, &start, &end, &layer, &priority, &blendin, &play_mode, &layer_weight, &ipo_flags, &speed, &blend_mode))
+	{
 		return nullptr;
+	}
 
 	layer_check(layer, "playAction");
 
