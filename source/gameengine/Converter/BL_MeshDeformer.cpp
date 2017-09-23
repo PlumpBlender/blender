@@ -62,9 +62,9 @@ bool BL_MeshDeformer::Apply(RAS_MeshMaterial *UNUSED(meshmat), RAS_IDisplayArray
 
 			//	For each vertex
 			for (unsigned int i = 0, size = array->GetVertexCount(); i < size; ++i) {
-				RAS_IVertex *v = array->GetVertex(i);
+				RAS_Vertex v = array->GetVertex(i);
 				const RAS_VertexInfo& vinfo = array->GetVertexInfo(i);
-				v->SetXYZ(m_bmesh->mvert[vinfo.getOrigIndex()].co);
+				v.SetXYZ(m_bmesh->mvert[vinfo.GetOrigIndex()].co);
 			}
 
 			array->SetModifiedFlag(RAS_IDisplayArray::POSITION_MODIFIED);
@@ -149,13 +149,13 @@ void BL_MeshDeformer::RecalcNormals()
 		for (unsigned int j = 0; j < numvert; ++j) {
 			const unsigned int index = poly->GetVertexOffset(j);
 			const RAS_VertexInfo& vinfo = array->GetVertexInfo(index);
-			const unsigned int origindex = vinfo.getOrigIndex();
+			const unsigned int origindex = vinfo.GetOrigIndex();
 
 			co[j] = m_transverts[origindex];
 			indices[j] = index;
 			origindices[j] = origindex;
 
-			if (!(vinfo.getFlag() & RAS_VertexInfo::FLAT)) {
+			if (!(vinfo.GetFlag() & RAS_VertexInfo::FLAT)) {
 				flat = false;
 			}
 		}
@@ -171,9 +171,8 @@ void BL_MeshDeformer::RecalcNormals()
 		if (flat) {
 			MT_Vector3 normal(pnorm);
 			for (unsigned int j = 0; j < numvert; ++j) {
-				RAS_IVertex *vert = array->GetVertex(indices[j]);
-
-				vert->SetNormal(normal);
+				RAS_Vertex vert = array->GetVertex(indices[j]);
+				vert.SetNormal(normal);
 			}
 		}
 		else {
@@ -186,11 +185,11 @@ void BL_MeshDeformer::RecalcNormals()
 	// Assign smooth vertex normals.
 	for (RAS_IDisplayArray *array: m_displayArrayList) {
 		for (unsigned int i = 0, size = array->GetVertexCount(); i < size; ++i) {
-			RAS_IVertex *v = array->GetVertex(i);
+			RAS_Vertex v = array->GetVertex(i);
 			const RAS_VertexInfo& vinfo = array->GetVertexInfo(i);
 
-			if (!(vinfo.getFlag() & RAS_VertexInfo::FLAT))
-				v->SetNormal(MT_Vector3(m_transnors[vinfo.getOrigIndex()])); //.safe_normalized()
+			if (!(vinfo.GetFlag() & RAS_VertexInfo::FLAT))
+				v.SetNormal(MT_Vector3(m_transnors[vinfo.GetOrigIndex()])); //.safe_normalized()
 		}
 	}
 }

@@ -27,6 +27,7 @@
 #ifndef __RAS_IDISPLAY_ARRAY_H__
 #define __RAS_IDISPLAY_ARRAY_H__
 
+#include "RAS_VertexData.h"
 #include "RAS_Vertex.h"
 #include <vector>
 
@@ -53,8 +54,8 @@ protected:
 
 	/// The vertex infos unused for rendering, e.g original or soft body index, flag.
 	std::vector<RAS_VertexInfo> m_vertexInfos;
-	/// Cached vertex pointers. This list is constructed with the function UpdateCache.
-	std::vector<RAS_IVertex *> m_vertexPtrs;
+	/// Cached vertex data pointers. This list is constructed with the function UpdateCache.
+	std::vector<RAS_IVertexData *> m_vertexDataPtrs;
 	/// The indices used for rendering.
 	std::vector<unsigned int> m_indices;
 
@@ -87,11 +88,11 @@ public:
 	/** Return a vertex pointer without using the cache. Used to get
 	 * a vertex pointer during contruction.
 	 */
-	virtual RAS_IVertex *GetVertexNoCache(const unsigned int index) const = 0;
+	virtual RAS_Vertex GetVertexNoCache(const unsigned int index) = 0;
 
-	inline RAS_IVertex *GetVertex(const unsigned int index) const
+	inline RAS_Vertex GetVertex(const unsigned int index)
 	{
-		return m_vertexPtrs[index];
+		return RAS_Vertex(m_vertexDataPtrs[index], m_format);
 	}
 
 	inline unsigned int GetIndex(const unsigned int index) const
@@ -114,7 +115,7 @@ public:
 		return m_vertexInfos[index];
 	}
 
-	virtual void AddVertex(RAS_IVertex *vert) = 0;
+	virtual void AddVertex(RAS_Vertex& vert) = 0;
 
 	inline void AddIndex(const unsigned int index)
 	{
@@ -126,7 +127,7 @@ public:
 		m_vertexInfos.push_back(info);
 	}
 
-	virtual const RAS_IVertex *GetVertexPointer() const = 0;
+	virtual const RAS_IVertexData *GetVertexPointer() const = 0;
 
 	inline const unsigned int *GetIndexPointer() const
 	{
@@ -143,7 +144,7 @@ public:
 	void SortPolygons(const MT_Transform &transform, unsigned int *indexmap);
 	void InvalidatePolygonCenters();
 
-	virtual RAS_IVertex *CreateVertex(
+	virtual RAS_Vertex CreateVertex(
 				const MT_Vector3& xyz,
 				const MT_Vector2 * const uvs,
 				const MT_Vector4& tangent,

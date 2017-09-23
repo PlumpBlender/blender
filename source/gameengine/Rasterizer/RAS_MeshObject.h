@@ -50,7 +50,6 @@
 class RAS_MeshUser;
 class RAS_Deformer;
 class RAS_Polygon;
-class RAS_IVertex;
 class RAS_BoundingBox;
 class RAS_BoundingBoxManager;
 struct Mesh;
@@ -140,7 +139,6 @@ public:
 
 	// vertex and polygon acces
 	RAS_IDisplayArray *GetDisplayArray(unsigned int matid) const;
-	RAS_IVertex *GetVertex(unsigned int matid, unsigned int index);
 	const float *GetVertexLocation(unsigned int orig_index);
 
 	int NumPolygons();

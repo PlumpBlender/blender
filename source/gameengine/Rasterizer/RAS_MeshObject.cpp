@@ -193,7 +193,7 @@ unsigned int RAS_MeshObject::AddVertex(
 				const unsigned int origindex)
 {
 	RAS_IDisplayArray *darray = meshmat->GetDisplayArray();
-	RAS_IVertex *vertex = darray->CreateVertex(xyz, uvs, tangent, rgba, normal);
+	RAS_Vertex vertex = darray->CreateVertex(xyz, uvs, tangent, rgba, normal);
 
 	{	/* Shared Vertex! */
 		/* find vertices shared between faces, with the restriction
@@ -205,11 +205,11 @@ unsigned int RAS_MeshObject::AddVertex(
 		for (it = sharedmap.begin(); it != sharedmap.end(); it++) {
 			if (it->m_darray != darray)
 				continue;
-			if (!it->m_darray->GetVertexNoCache(it->m_offset)->closeTo(vertex))
+			if (!it->m_darray->GetVertexNoCache(it->m_offset).CloseTo(vertex))
 				continue;
 
 			// found one, add it and we're done
-			delete vertex;
+			delete vertex.GetData();
 			return it->m_offset;
 		}
 	}
@@ -228,7 +228,6 @@ unsigned int RAS_MeshObject::AddVertex(
 		m_sharedvertex_map[origindex].push_back(shared);
 	}
 
-	delete vertex;
 	return offset;
 }
 
@@ -244,22 +243,11 @@ RAS_IDisplayArray *RAS_MeshObject::GetDisplayArray(unsigned int matid) const
 	return array;
 }
 
-RAS_IVertex *RAS_MeshObject::GetVertex(unsigned int matid, unsigned int index)
-{
-	RAS_IDisplayArray *array = GetDisplayArray(matid);
-
-	if (index < array->GetVertexCount()) {
-		return array->GetVertex(index);
-	}
-
-	return nullptr;
-}
-
 const float *RAS_MeshObject::GetVertexLocation(unsigned int orig_index)
 {
 	std::vector<SharedVertex>& sharedmap = m_sharedvertex_map[orig_index];
 	std::vector<SharedVertex>::iterator it = sharedmap.begin();
-	return it->m_darray->GetVertex(it->m_offset)->getXYZ();
+	return it->m_darray->GetVertex(it->m_offset).GetXYZ();
 }
 
 RAS_BoundingBox *RAS_MeshObject::GetBoundingBox() const

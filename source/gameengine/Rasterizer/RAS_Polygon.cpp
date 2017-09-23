@@ -56,7 +56,7 @@ void RAS_Polygon::SetVertexOffset(int i, unsigned int offset)
 	m_offset[i] = offset;
 }
 
-RAS_IVertex *RAS_Polygon::GetVertex(int i) const
+RAS_Vertex RAS_Polygon::GetVertex(int i) const
 {
 	return m_darray->GetVertex(m_offset[i]);
 }

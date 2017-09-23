@@ -106,26 +106,26 @@ bool KX_SoftBodyDeformer::Apply(RAS_MeshMaterial *meshmat, RAS_IDisplayArray *ar
 	MT_Vector3 aabbMax;
 
 	for (unsigned int i = 0, size = array->GetVertexCount(); i < size; ++i) {
-		RAS_IVertex *v = array->GetVertex(i);
+		RAS_Vertex v = array->GetVertex(i);
 		const RAS_VertexInfo& vinfo = origarray->GetVertexInfo(i);
 		/* The physics converter write the soft body index only in the original
 		 * vertex array because at this moment it doesn't know which is the
 		 * game object. It didn't cause any issues because it's always the same
 		 * vertex order.
 		 */
-		const unsigned int softbodyindex = vinfo.getSoftBodyIndex();
+		const unsigned int softbodyindex = vinfo.GetSoftBodyIndex();
 
 		MT_Vector3 pt(
 		    nodes[softbodyindex].m_x.getX(),
 		    nodes[softbodyindex].m_x.getY(),
 		    nodes[softbodyindex].m_x.getZ());
-		v->SetXYZ(pt);
+		v.SetXYZ(pt);
 
 		MT_Vector3 normal(
 		    nodes[softbodyindex].m_n.getX(),
 		    nodes[softbodyindex].m_n.getY(),
 		    nodes[softbodyindex].m_n.getZ());
-		v->SetNormal(normal);
+		v.SetNormal(normal);
 
 		if (!m_gameobj->GetAutoUpdateBounds()) {
 			continue;

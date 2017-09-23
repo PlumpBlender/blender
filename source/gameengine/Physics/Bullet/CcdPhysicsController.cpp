@@ -489,19 +489,19 @@ bool CcdPhysicsController::CreateSoftbody()
 				RAS_IDisplayArray *array = mmat->GetDisplayArray();
 
 				for (unsigned int i = 0, size = array->GetVertexCount(); i < size; ++i) {
-					RAS_IVertex *vertex = array->GetVertex(i);
+					RAS_Vertex vertex = array->GetVertex(i);
 					RAS_VertexInfo& vertexInfo = array->GetVertexInfo(i);
 					//search closest index, and store it in vertex
-					vertexInfo.setSoftBodyIndex(0);
+					vertexInfo.SetSoftBodyIndex(0);
 					btScalar maxDistSqr = 1e30;
 					btSoftBody::tNodeArray& nodes(psb->m_nodes);
-					btVector3 xyz = ToBullet(vertex->xyz());
+					btVector3 xyz = ToBullet(vertex.xyz());
 					for (int n = 0; n < nodes.size(); n++) {
 						btScalar distSqr = (nodes[n].m_x - xyz).length2();
 						if (distSqr < maxDistSqr) {
 							maxDistSqr = distSqr;
 
-							vertexInfo.setSoftBodyIndex(n);
+							vertexInfo.SetSoftBodyIndex(n);
 						}
 					}
 				}
@@ -2307,7 +2307,7 @@ bool CcdShapeConstructionInfo::UpdateMesh(class KX_GameObject *gameobj, class RA
 			RAS_Polygon *poly = meshobj->GetPolygon(p);
 			if (poly->IsCollider()) {
 				for (i = 0; i < poly->VertexCount(); i++) {
-					v_orig = poly->GetVertexInfo(i).getOrigIndex();
+					v_orig = poly->GetVertexInfo(i).GetOrigIndex();
 					if (!vert_tag_array[v_orig]) {
 						vert_tag_array[v_orig] = true;
 						vert_remap_array[v_orig] = tot_bt_verts;
@@ -2342,7 +2342,7 @@ bool CcdShapeConstructionInfo::UpdateMesh(class KX_GameObject *gameobj, class RA
 				fv_pt = (poly->VertexCount() == 3 ? tri_verts : quad_verts);
 
 				for (; *fv_pt > -1; fv_pt++) {
-					v_orig = poly->GetVertexInfo(*fv_pt).getOrigIndex();
+					v_orig = poly->GetVertexInfo(*fv_pt).GetOrigIndex();
 					if (vert_tag_array[v_orig]) {
 						if (transverts) {
 							/* deformed mesh, using RAS_Vertex locations would be too troublesome

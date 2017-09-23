@@ -32,10 +32,10 @@
 #ifndef __RAS_POLYGON_H__
 #define __RAS_POLYGON_H__
 
+#include "RAS_Vertex.h"
+
 class RAS_IDisplayArray;
 class RAS_MaterialBucket;
-class RAS_IVertex;
-class RAS_VertexInfo;
 
 class RAS_Polygon
 {
@@ -59,7 +59,7 @@ public:
 	}
 
 	int VertexCount() const;
-	RAS_IVertex *GetVertex(int i) const;
+	RAS_Vertex GetVertex(int i) const;
 	const RAS_VertexInfo& GetVertexInfo(unsigned int i) const;
 
 	void SetVertexOffset(int i, unsigned int offset);

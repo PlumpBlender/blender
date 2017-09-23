@@ -44,7 +44,6 @@
 #include "BL_BlenderSceneConverter.h"
 #include "RAS_MeshObject.h"
 #include "RAS_Polygon.h"
-#include "RAS_IVertex.h"
 
 #include "DNA_scene_types.h"
 #include "DNA_world_types.h"
@@ -1883,16 +1882,16 @@ struct  DbvtCullingCallback : btDbvt::ICollide {
 						switch (poly->VertexCount())
 						{
 							case 3:
-								v1 = poly->GetVertex(0)->getXYZ();
-								v2 = poly->GetVertex(1)->getXYZ();
-								v3 = poly->GetVertex(2)->getXYZ();
+								v1 = poly->GetVertex(0).GetXYZ();
+								v2 = poly->GetVertex(1).GetXYZ();
+								v3 = poly->GetVertex(2).GetXYZ();
 								m_ocb->appendOccluderM(v1, v2, v3, ((poly->IsTwoside()) ? 0.f : face));
 								break;
 							case 4:
-								v1 = poly->GetVertex(0)->getXYZ();
-								v2 = poly->GetVertex(1)->getXYZ();
-								v3 = poly->GetVertex(2)->getXYZ();
-								v4 = poly->GetVertex(3)->getXYZ();
+								v1 = poly->GetVertex(0).GetXYZ();
+								v2 = poly->GetVertex(1).GetXYZ();
+								v3 = poly->GetVertex(2).GetXYZ();
+								v4 = poly->GetVertex(3).GetXYZ();
 								m_ocb->appendOccluderM(v1, v2, v3, v4, ((poly->IsTwoside()) ? 0.f : face));
 								break;
 						}
