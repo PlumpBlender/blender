@@ -337,7 +337,7 @@ SCA_IInputDevice::SCA_EnumInputs ConvertKeyCode(int key_code)
 }
 
 static void GetUvRgba(const RAS_MeshObject::LayerList& layers, unsigned int loop,
-		MT_Vector2 uvs[RAS_Texture::MaxUnits], unsigned int rgba[RAS_IVertex::MAX_UNIT],
+		mt::vec2 uvs[RAS_Texture::MaxUnits], unsigned int rgba[RAS_IVertex::MAX_UNIT],
 		unsigned short uvLayers, unsigned short colorLayers)
 {
 	// No need to initialize layers to zero as all the converted layer are all the layers needed.

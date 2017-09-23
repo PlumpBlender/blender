@@ -423,7 +423,7 @@ void KX_SteeringActuator::HandleActorFace(mt::vec3& velocity)
 	if (mt::vec3::FuzzyZero(dir))
 		return;
 	dir.Normalize();
-	mt::vec3 up(0,0,1);
+	mt::vec3 up = mt::axisZ3;
 	mt::vec3 left;
 	mt::mat3 mat;
 	
