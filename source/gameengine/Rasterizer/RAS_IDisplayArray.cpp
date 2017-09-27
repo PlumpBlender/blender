@@ -106,7 +106,7 @@ void RAS_IDisplayArray::SortPolygons(const mt::mat3x4& transform, unsigned int *
 	}
 
 	// Extract camera Z plane.
-	const mt::vec3 pnorm(transform.GetRow(2).xyz());
+	const mt::vec3 pnorm(transform[2], transform[5], transform[8]);
 
 	if (m_polygonCenters.size() != totpoly) {
 		m_polygonCenters.resize(totpoly);
