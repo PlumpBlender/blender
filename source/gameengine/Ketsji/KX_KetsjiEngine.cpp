@@ -255,8 +255,10 @@ void KX_KetsjiEngine::BeginFrame()
 {
 	m_logger.StartLog(tc_overhead, m_kxsystem->GetTimeInSeconds());
 
-	for (RAS_Query& query : m_renderQueries) {
-		query.Begin();
+	if (m_flags & SHOW_RENDER_QUERIES) {
+		for (RAS_Query& query : m_renderQueries) {
+			query.Begin();
+		}
 	}
 
 	m_logger.StartLog(tc_rasterizer, m_kxsystem->GetTimeInSeconds());
@@ -272,9 +274,11 @@ void KX_KetsjiEngine::EndFrame()
 
 	// Show profiling info
 	m_logger.StartLog(tc_overhead, m_kxsystem->GetTimeInSeconds());
-
-	for (RAS_Query& query : m_renderQueries) {
-		query.End();
+	
+	if (m_flags & SHOW_RENDER_QUERIES) {
+		for (RAS_Query& query : m_renderQueries) {
+			query.End();
+		}
 	}
 
 	if (m_flags & (SHOW_PROFILE | SHOW_FRAMERATE | SHOW_DEBUG_PROPERTIES | SHOW_RENDER_QUERIES)) {
